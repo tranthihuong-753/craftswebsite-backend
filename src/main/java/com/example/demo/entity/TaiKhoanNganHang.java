@@ -42,9 +42,6 @@ public class TaiKhoanNganHang {
     @Column(name = "TKNH_TenTaiKhoan")
     private String tenTaiKhoan;
 
-    @Column(name = "TKNH_ChuoiVietQR", columnDefinition = "TEXT")
-    private String chuoiVietQR;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "TKNH_TrangThai")
     private TrangThaiTaiKhoanNganHang trangThai;

@@ -102,13 +102,25 @@ public class NguoiDungController {
         return nguoiDungService.getAllTenDangNhap();
     }
 
-    // login
+    // @PostMapping("/login")
+    // public boolean login(@RequestBody Map<String,String> body) {
+    //     String username = body.get("username");
+    //     String password = body.get("password");
+    //     return nguoiDungService.login(username, password);
+    // }
+
     @PostMapping("/login")
-    public boolean login(@RequestBody Map<String,String> body) {
+    public Map<String,Object> login(@RequestBody Map<String,String> body) {
 
         String username = body.get("username");
         String password = body.get("password");
 
-        return nguoiDungService.login(username, password);
+        UUID userId = nguoiDungService.loginAndGetUserId(username, password);
+
+        return Map.of(
+                "success", true,
+                "userId", userId
+        );
     }
+
 }

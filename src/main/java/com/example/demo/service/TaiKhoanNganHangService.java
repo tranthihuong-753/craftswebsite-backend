@@ -32,7 +32,6 @@ public class TaiKhoanNganHangService {
         old.setTenNganHang(data.getTenNganHang());
         old.setSoTaiKhoan(data.getSoTaiKhoan());
         old.setTenTaiKhoan(data.getTenTaiKhoan());
-        old.setChuoiVietQR(data.getChuoiVietQR());
         old.setTrangThai(data.getTrangThai());
 
         return repository.save(old);

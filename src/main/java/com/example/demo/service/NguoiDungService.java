@@ -144,14 +144,24 @@ public class NguoiDungService {
         return nguoiDungRepository.findAllTenDangNhap();
     }
 
-    public boolean login(String username, String password) {
+    // public boolean login(String username, String password) {
 
-        Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhap(username);
+    //     Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhap(username);
 
-        if(userOpt.isEmpty()) return false;
+    //     if(userOpt.isEmpty()) return false;
 
-        NguoiDung user = userOpt.get();
+    //     NguoiDung user = userOpt.get();
 
-        return user.getMatKhau().equals(password);
+    //     return user.getMatKhau().equals(password);
+    // }
+
+    public UUID loginAndGetUserId(String username, String password) {
+
+        NguoiDung user = nguoiDungRepository
+                .findByTenDangNhapAndMatKhau(username, password)
+                .orElseThrow(() -> new RuntimeException("Sai tên đăng nhập hoặc mật khẩu"));
+
+        return user.getId();
     }
+
 }

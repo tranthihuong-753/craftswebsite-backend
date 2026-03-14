@@ -18,5 +18,8 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, UUID> {
     @Query("SELECT n.tenDangNhap FROM NguoiDung n WHERE n.tenDangNhap IS NOT NULL")
     List<String> findAllTenDangNhap();
 
-    Optional<NguoiDung> findByTenDangNhap(String tenDangNhap);
+    // Optional<NguoiDung> findByTenDangNhap(String tenDangNhap);
+
+    Optional<NguoiDung> findByTenDangNhapAndMatKhau(String tenDangNhap, String matKhau);
+
 } 
