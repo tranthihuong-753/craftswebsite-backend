@@ -9,13 +9,29 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.AnhVideo;
 import com.example.demo.entity.NguoiDung;
+import com.example.demo.entity.VaiTro;
+import com.example.demo.entity.VaiTroNguoiDung;
 import com.example.demo.enums.ND_Trangthaixacthuc;
 import com.example.demo.model.ND_CCCD;
 import com.example.demo.repository.NguoiDungRepository;
+import com.example.demo.repository.VaiTroNguoiDungRepository;
+import com.example.demo.repository.VaiTroRepository;
 @Service
 public class NguoiDungService {
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+
+    @Autowired
+    private VaiTroRepository vaiTroRepository;
+
+    @Autowired
+    private CCCDService cccdService;
+
+    @Autowired
+    private AnhVideoService anhVideoService;
+
+    @Autowired
+    private VaiTroNguoiDungRepository vtndRepository;
     
     // CREATE
     public NguoiDung createNguoiDung(NguoiDung nguoiDung) {
@@ -58,12 +74,6 @@ public class NguoiDungService {
     public void deleteNguoiDung(UUID id) {
         nguoiDungRepository.deleteById(id);
     }
-
-    @Autowired
-    private CCCDService cccdService;
-
-    @Autowired
-    private AnhVideoService anhVideoService;
 
     // public NguoiDung taoNguoiDungTuCCCD(String imageUrl) {
         
@@ -108,6 +118,11 @@ public class NguoiDungService {
         av.setLink(imageUrl);
         nd.setAnhVideo_anhCCCD(anhVideoService.create(av));
 
+        // lay anh lam anh chan dung 
+        AnhVideo avChanDung = new AnhVideo();
+        avChanDung.setLink(imageUrl);
+        nd.setAnhVideo_anhChanDung(anhVideoService.create(avChanDung));
+
         return nguoiDungRepository.save(nd);
     }
 
@@ -137,6 +152,13 @@ public class NguoiDungService {
 
         nd.setTrangThaiXacThuc(ND_Trangthaixacthuc.CCCD_PASS);
 
+        // gán role BUYER
+        VaiTro roleBuyer = vaiTroRepository.findByLoai("BUYER");
+        VaiTroNguoiDung vtnd = new VaiTroNguoiDung();
+        vtnd.setNguoiDung(nd);
+        vtnd.setVaiTro(roleBuyer);
+        vtndRepository.save(vtnd);
+
         return nguoiDungRepository.save(nd);
     }
 
@@ -157,11 +179,28 @@ public class NguoiDungService {
 
     public UUID loginAndGetUserId(String username, String password) {
 
-        NguoiDung user = nguoiDungRepository
-                .findByTenDangNhapAndMatKhau(username, password)
-                .orElseThrow(() -> new RuntimeException("Sai tên đăng nhập hoặc mật khẩu"));
+        Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhapAndMatKhau(username, password);
+
+        if(userOpt.isEmpty()) return null;
+
+        NguoiDung user = userOpt.get();
+
+        if(!user.getMatKhau().equals(password)){
+            return null;
+        }
 
         return user.getId();
     }
 
+    // tu id lay anhchandung 
+    public AnhVideo getAnhChanDungById(UUID id) {
+        return nguoiDungRepository.findAnhChanDungById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh chân dung"));
+    }
+
+    // tu id lay ten nguoi dung
+    public String getTenById(UUID id) {
+        return nguoiDungRepository.findTenById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tên người dùng"));
+    }
 }

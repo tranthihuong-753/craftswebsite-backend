@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -71,7 +72,11 @@ public class ThongTinNguoiBanService {
     // tu nguoimua check xem da co tai khoan nguoi ban chua
     public boolean checkNguoiBanByNguoiDungId(UUID ndId)
     {
-        return repository.existsByNguoiDung_Id(ndId);
+        Optional<ThongTinNguoiBan> ttnb = repository.findByNguoiDungId(ndId);
+        if (ttnb.isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     @Transactional
@@ -101,6 +106,17 @@ public class ThongTinNguoiBanService {
         bank.setNgayTao(LocalDateTime.now());
 
         taiKhoanNganHangRepository.save(bank);
+    }
+
+    public UUID getSellerIdByUserId(UUID userId) {
+
+        Optional<ThongTinNguoiBan> seller = repository.findByNguoiDungId(userId);
+
+        if (seller.isPresent()) {
+            return seller.get().getId();
+        }
+
+        return null;
     }
 
 }

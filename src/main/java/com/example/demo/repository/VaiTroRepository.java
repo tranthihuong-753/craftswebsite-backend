@@ -8,4 +8,10 @@ import com.example.demo.entity.VaiTro;
 @Repository
 public interface VaiTroRepository extends JpaRepository<VaiTro, Long> {
 
+    // boolean existsByTenVaiTro(String role);
+
+    VaiTro findByLoai(String string);
+
+    boolean existsByLoai(String role);
+
 } 
