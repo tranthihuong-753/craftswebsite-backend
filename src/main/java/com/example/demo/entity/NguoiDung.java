@@ -20,10 +20,6 @@ public class NguoiDung {
     @Column(name = "ND_Id")
     private UUID id;
 
-    // @ManyToOne
-    // @JoinColumn(name = "ND_VTND_Id", referencedColumnName = "VTND_Id")
-    // private VaiTroNguoiDung vaiTroNguoiDung;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "ND_CCCD")
     private ND_CCCD cccd;
@@ -38,15 +34,9 @@ public class NguoiDung {
     @Column(name = "ND_TrangThaiXacThuc")
     private ND_Trangthaixacthuc trangThaiXacThuc;
 
-    // @Column(name = "ND_AV_Id_AnhChanDung")
-    // private Integer AV_Id_anhChanDung;
-
     @ManyToOne
     @JoinColumn(name = "ND_AV_Id_AnhChanDung", referencedColumnName = "AV_Id")
     private AnhVideo anhVideo_anhChanDung;
-
-    // @Column(name = "ND_DC_Id")
-    // private Integer DC_Id;
 
     @ManyToOne
     @JoinColumn(name = "ND_DC_Id", referencedColumnName = "DC_Id")
@@ -61,9 +51,6 @@ public class NguoiDung {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "ND_VectorCCCD")
     private List<Float> vectorCCCD;
-
-    // @Column(name = "ND_AV_ID_AnhCCCD")
-    // private Integer AV_ID_anhCCCD;
 
     @ManyToOne
     @JoinColumn(name = "ND_AV_ID_AnhCCCD", referencedColumnName = "AV_Id")

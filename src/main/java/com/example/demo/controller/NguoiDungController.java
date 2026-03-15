@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -110,16 +111,45 @@ public class NguoiDungController {
     // }
 
     @PostMapping("/login")
-    public Map<String,Object> login(@RequestBody Map<String,String> body) {
+    public ResponseEntity<?> login(@RequestBody Map<String,String> body) {
 
         String username = body.get("username");
         String password = body.get("password");
 
         UUID userId = nguoiDungService.loginAndGetUserId(username, password);
 
+        if(userId == null){
+            return ResponseEntity.status(401).body(
+                    Map.of("success", false, "message", "Sai tài khoản hoặc mật khẩu")
+            );
+        }
+
+        return ResponseEntity.ok(
+                Map.of("success", true, "userId", userId)
+        );
+    }
+
+    // tu id lay anhchandung 
+    @GetMapping("/{id}/anh-chan-dung")
+    public Map<String,Object> getAnhChanDungById(@PathVariable UUID id) {
+
+        String anhChanDungUrl = nguoiDungService.getAnhChanDungById(id).getLink();
+
         return Map.of(
                 "success", true,
-                "userId", userId
+                "anhChanDungUrl", anhChanDungUrl
+        );
+    }
+
+    // tu id lay ten nguoi dung
+    @GetMapping("/{id}/ten")
+    public Map<String,Object> getTenById(@PathVariable UUID id) {
+
+        String ten = nguoiDungService.getTenById(id);
+
+        return Map.of(
+                "success", true,
+                "ten", ten
         );
     }
 

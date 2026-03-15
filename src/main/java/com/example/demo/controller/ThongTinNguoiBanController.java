@@ -54,9 +54,10 @@ public class ThongTinNguoiBanController {
 
     // tu nguoimua check xem da co tai khoan nguoi ban chua 
     @GetMapping("/check/{ndId}")
-    public boolean checkNguoiBanByNguoiDungId(@PathVariable UUID ndId)
+    public ResponseEntity<Boolean> checkNguoiBanByNguoiDungId(@PathVariable UUID ndId)
     {
-        return service.checkNguoiBanByNguoiDungId(ndId);
+        boolean exists = service.checkNguoiBanByNguoiDungId(ndId);
+        return ResponseEntity.ok(exists);
     }
 
     @PostMapping
@@ -78,6 +79,18 @@ public class ThongTinNguoiBanController {
                             "error", e.getMessage()
                     ));
         }
+    }
+
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<UUID> getSellerId(@PathVariable UUID userId) {
+
+        UUID sellerId = service.getSellerIdByUserId(userId);
+
+        if (sellerId == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(sellerId);
     }
 
 }
