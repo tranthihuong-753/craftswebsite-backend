@@ -58,8 +58,8 @@ public class SanPhamCoSan {
     @Column(name = "SPCS_TrangThai")
     private TrangThaiSanPhamCoSan trangThai;
 
-    @Column(name = "SPCS_SearchText")
-    private String searchText;
+    @Column(name = "SPCS_TimKiem")
+    private String timKiem;
 
     @PrePersist
     @PreUpdate
@@ -70,7 +70,7 @@ public class SanPhamCoSan {
                 (gia == null ? "" : gia.toString()) +
                 (soLuongBanDau == null ? "" : soLuongBanDau.toString());
 
-        this.searchText = TextUtils.normalize(text);
+        this.timKiem = TextUtils.normalize(text);
     }
 
 }
