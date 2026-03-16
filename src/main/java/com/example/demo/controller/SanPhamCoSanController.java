@@ -48,19 +48,12 @@ public class SanPhamCoSanController {
 
     @GetMapping
     public Page<SellerProductDTO> getProducts(
+            @RequestParam UUID sellerId,
             @RequestParam String status,
-            @RequestParam int page,
-            @RequestParam int size,
-            @RequestParam(defaultValue = "desc") String sort
+            @RequestParam(required = false) String search,
+            Pageable pageable
     ) {
-
-        Sort sorting = sort.equals("asc")
-                ? Sort.by("sanPham.ngayTao").ascending()
-                : Sort.by("sanPham.ngayTao").descending();
-
-        Pageable pageable = PageRequest.of(page - 1, size, sorting);
-
-        return sanPhamCoSanService.getProducts(status, pageable);
+        return sanPhamCoSanService.getProducts(sellerId, status, search, pageable);
     }
 
     @GetMapping("/{id}")

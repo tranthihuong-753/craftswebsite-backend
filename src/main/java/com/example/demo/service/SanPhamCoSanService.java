@@ -198,12 +198,24 @@ public class SanPhamCoSanService {
     //     );
     // }
 
-    public Page<SellerProductDTO> getProducts(String status, Pageable pageable) {
+    public Page<SellerProductDTO> getProducts(
+        UUID sellerId,
+        String status,
+        String search,
+        Pageable pageable
+    ) {
 
-        TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+        TrangThaiSanPhamCoSan trangThai = TrangThaiSanPhamCoSan.valueOf(status);
 
-        Page<SanPhamCoSan> page =
-                sanPhamCoSanRepository.findBySanPhamTrangThai(trangThai, pageable);
+        Page<SanPhamCoSan> page;
+
+        if (search != null && !search.isEmpty()) {
+            page = sanPhamCoSanRepository
+                    .searchProducts(sellerId, trangThai, search, pageable);
+        } else {            
+            page = sanPhamCoSanRepository
+                    .findBySanPhamThongTinNguoiBanIdAndTrangThai(sellerId, trangThai, pageable);
+        }
 
         return new PageImpl<>(
             page.getContent().stream().map(spcs -> {
