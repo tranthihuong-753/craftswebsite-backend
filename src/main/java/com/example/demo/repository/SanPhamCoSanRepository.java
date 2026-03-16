@@ -20,22 +20,22 @@ public interface SanPhamCoSanRepository extends JpaRepository<SanPhamCoSan, Long
 
     Page<SanPhamCoSan> findBySanPhamTrangThai(TrangThaiSanPham status, Pageable pageable);
 
-@Query("""
-SELECT s
-FROM SanPhamCoSan s
-JOIN s.sanPham sp
-WHERE sp.thongTinNguoiBan.id = :sellerId
-AND s.trangThai = :status
-AND (
-    :search IS NULL
-    OR s.searchText LIKE CONCAT('%', :search, '%')
-)
-""")
-Page<SanPhamCoSan> searchProducts(
-        UUID sellerId,
-        TrangThaiSanPhamCoSan status,
-        String search,
-        Pageable pageable
-);
+    @Query("""
+    SELECT s
+    FROM SanPhamCoSan s
+    JOIN s.sanPham sp
+    WHERE sp.thongTinNguoiBan.id = :sellerId
+    AND s.trangThai = :status
+    AND (
+        :search IS NULL
+        OR s.timKiem LIKE CONCAT('%', :search, '%')
+    )
+    """)
+    Page<SanPhamCoSan> searchProducts(
+            UUID sellerId,
+            TrangThaiSanPhamCoSan status,
+            String search,
+            Pageable pageable
+    );
 
 }
