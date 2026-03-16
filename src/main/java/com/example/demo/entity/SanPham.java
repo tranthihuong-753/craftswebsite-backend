@@ -14,7 +14,7 @@ public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SP_Id")
-    private Integer id;
+    private Long id;
 
     // Thông tin người bán
     @ManyToOne
@@ -38,7 +38,7 @@ public class SanPham {
 
     // số giờ làm việc ước tính (cho sản phẩm đặt làm)
     @Column(name = "SP_SoGioLamViecUocTinh")
-    private Integer soGioLamViecUocTinh;
+    private Long soGioLamViecUocTinh;
 
     // chứng chỉ
     @ManyToOne

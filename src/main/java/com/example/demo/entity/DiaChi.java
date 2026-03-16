@@ -32,8 +32,8 @@ public class DiaChi {
     private String cuThe;
 
     @Column(name = "DC_ThietLapMacDinh")
-    private Integer thietLapMacDinh; // 1 la mac dinh, 0 la khong mac dinh
+    private Long thietLapMacDinh; // 1 la mac dinh, 0 la khong mac dinh
 
     @Column(name = "DC_Status")
-    private Integer status; //1 = con su dung , 0 = khong con su dung
+    private Long status; //1 = con su dung , 0 = khong con su dung
 }

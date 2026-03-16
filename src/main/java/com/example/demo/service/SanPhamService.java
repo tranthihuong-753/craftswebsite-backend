@@ -19,7 +19,7 @@ public class SanPhamService {
         return repository.findAll();
     }
 
-    public SanPham getById(Integer id) {
+    public SanPham getById(Long id) {
         return repository.findById(id).orElseThrow();
     }
 
@@ -27,7 +27,7 @@ public class SanPhamService {
         return repository.save(sanPham);
     }
 
-    public SanPham update(Integer id, SanPham sanPham) {
+    public SanPham update(Long id, SanPham sanPham) {
 
         SanPham old = repository.findById(id).orElseThrow();
 
@@ -41,7 +41,7 @@ public class SanPhamService {
         return repository.save(old);
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         repository.deleteById(id);
     }
 

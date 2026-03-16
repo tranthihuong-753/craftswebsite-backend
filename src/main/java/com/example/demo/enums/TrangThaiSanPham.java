@@ -2,9 +2,9 @@ package com.example.demo.enums;
 
 public enum TrangThaiSanPham {
 
-    NHAP,
+    LUU_AN,
+    LUU_HIEN,
     DANG_BAN,
-    AN,
-    DA_XOA
+    HET_HANG    
 
 }

@@ -35,7 +35,7 @@ public class ChungChi {
     private Float diemTrungBinh;
 
     @Column(name = "CC_TongDanhGia")
-    private Integer tongDanhGia;
+    private Long tongDanhGia;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "CC_TrangThai")
