@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.DiaChi;
 import com.example.demo.repository.DiaChiRepository;
@@ -26,6 +27,7 @@ public class DiaChiService {
         return diaChiRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public DiaChi updateDiaChi(Long id, DiaChi newDiaChi) {
 
         DiaChi diaChi = diaChiRepository.findById(id).orElse(null);
@@ -45,6 +47,7 @@ public class DiaChiService {
         return null;
     }
 
+    @Transactional
     public void deleteDiaChi(Long id) {
         diaChiRepository.deleteById(id);
     }

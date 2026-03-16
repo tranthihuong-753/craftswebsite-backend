@@ -1,10 +1,20 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.SanPhamCoSanRequest;
+import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.SanPhamCoSan;
+import com.example.demo.enums.TrangThaiSanPhamCoSan;
 import com.example.demo.service.SanPhamCoSanService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/san-pham-co-san")
@@ -34,6 +44,38 @@ public class SanPhamCoSanController {
                 request.getTrangThaiChungChi(),
                 request.getMediaLinks()
         );
+    }
+
+    @GetMapping
+    public Page<SellerProductDTO> getProducts(
+            @RequestParam UUID sellerId,
+            @RequestParam String status,
+            @RequestParam(required = false) String search,
+            Pageable pageable
+    ) {
+        return sanPhamCoSanService.getProducts(sellerId, status, search, pageable);
+    }
+
+    @GetMapping("/{id}")
+    public SanPhamCoSan getById(@PathVariable Long id) {
+
+        return sanPhamCoSanService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public SanPhamCoSan update(
+            @PathVariable Long id,
+            @RequestBody SanPhamCoSanRequest request
+    ) {
+        return sanPhamCoSanService.updateSanPhamCoSan(id, request);
+    }
+    
+    @PutMapping("/{id}/delete")
+    public ResponseEntity<?> deleteSanPham(@PathVariable Long id) {
+
+        SanPhamCoSan result = sanPhamCoSanService.updateSanPhamCoSanTrangThai(id);
+
+        return ResponseEntity.ok(result);
     }
 
 }

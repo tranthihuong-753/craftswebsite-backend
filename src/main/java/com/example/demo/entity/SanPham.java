@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tblSanPham")
@@ -50,6 +51,9 @@ public class SanPham {
 
     @Column(name = "SP_NgayCapNhat")
     private LocalDateTime ngayCapNhat;
+
+    @OneToMany(mappedBy = "sanPham")
+    private List<AnhVideoSanPham> anhVideos;
 
     @PrePersist
     public void prePersist() {

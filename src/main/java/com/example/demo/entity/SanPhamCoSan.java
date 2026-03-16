@@ -7,6 +7,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.example.demo.utils.TextUtils;
+
 @Entity
 @Table(name = "tblSanPhamCoSan")
 @Data
@@ -55,5 +57,20 @@ public class SanPhamCoSan {
     @Enumerated(EnumType.STRING)
     @Column(name = "SPCS_TrangThai")
     private TrangThaiSanPhamCoSan trangThai;
+
+    @Column(name = "SPCS_TimKiem")
+    private String timKiem;
+
+    @PrePersist
+    @PreUpdate
+    public void buildSearchText() {
+
+        String text =
+                (moTa == null ? "" : moTa) +
+                (gia == null ? "" : gia.toString()) +
+                (soLuongBanDau == null ? "" : soLuongBanDau.toString());
+
+        this.timKiem = TextUtils.normalize(text);
+    }
 
 }

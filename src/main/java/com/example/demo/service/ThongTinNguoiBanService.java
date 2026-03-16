@@ -45,6 +45,7 @@ public class ThongTinNguoiBanService {
     }
 
     // UPDATE
+    @Transactional
     public ThongTinNguoiBan update(UUID id, ThongTinNguoiBan newData) {
 
         ThongTinNguoiBan old = repository.findById(id).orElse(null);
@@ -65,11 +66,13 @@ public class ThongTinNguoiBanService {
     }
 
     // DELETE
+    @Transactional
     public void delete(UUID id) {
         repository.deleteById(id);
     }
 
     // tu nguoimua check xem da co tai khoan nguoi ban chua
+    @Transactional
     public boolean checkNguoiBanByNguoiDungId(UUID ndId)
     {
         Optional<ThongTinNguoiBan> ttnb = repository.findByNguoiDungId(ndId);

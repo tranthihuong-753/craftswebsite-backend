@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.TaiKhoanNganHang;
 import com.example.demo.repository.TaiKhoanNganHangRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,11 +21,13 @@ public class TaiKhoanNganHangService {
         return repository.findAll();
     }
 
+    @Transactional
     public TaiKhoanNganHang create(TaiKhoanNganHang entity) {
         entity.setNgayTao(LocalDateTime.now());
         return repository.save(entity);
     }
 
+    @Transactional
     public TaiKhoanNganHang update(Long id, TaiKhoanNganHang data) {
         TaiKhoanNganHang old = repository.findById(id).orElseThrow();
 
