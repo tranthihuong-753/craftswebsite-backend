@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.DanhMuc;
+import com.example.demo.enums.TrangThaiDanhMuc;
 import com.example.demo.repository.DanhMucRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class DanhMucService {
         return repository.findAll();
     }
 
-    public Optional<DanhMuc> getById(Integer id) {
+    public Optional<DanhMuc> getById(Long id) {
         return repository.findById(id);
     }
 
@@ -26,7 +27,7 @@ public class DanhMucService {
         return repository.save(danhMuc);
     }
 
-    public DanhMuc update(Integer id, DanhMuc danhMuc) {
+    public DanhMuc update(Long id, DanhMuc danhMuc) {
 
         DanhMuc old = repository.findById(id).orElseThrow();
 
@@ -38,8 +39,12 @@ public class DanhMucService {
         return repository.save(old);
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public List<DanhMuc> getAllDanhMuc() {
+        return repository.findByTrangThai(TrangThaiDanhMuc.HOAT_DONG);
+    }    
 
 }

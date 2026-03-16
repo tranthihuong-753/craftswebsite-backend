@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
+public interface SanPhamRepository extends JpaRepository<SanPham, Long> {
 
     long countByThongTinNguoiBan_IdAndTrangThai(
         UUID thongTinNguoiBanId,

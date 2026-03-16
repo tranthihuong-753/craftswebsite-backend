@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.api.SellerRegisterRequest;
+import com.example.demo.dto.SellerRegisterRequest;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.entity.ThongTinNguoiBan;
 import com.example.demo.repository.NguoiDungRepository;

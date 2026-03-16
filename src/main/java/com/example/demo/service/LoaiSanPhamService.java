@@ -18,7 +18,7 @@ public class LoaiSanPhamService {
         return repository.findAll();
     }
 
-    public Optional<LoaiSanPham> getById(Integer id) {
+    public Optional<LoaiSanPham> getById(Long id) {
         return repository.findById(id);
     }
 
@@ -26,7 +26,7 @@ public class LoaiSanPhamService {
         return repository.save(loaiSanPham);
     }
 
-    public LoaiSanPham update(Integer id, LoaiSanPham loaiSanPham) {
+    public LoaiSanPham update(Long id, LoaiSanPham loaiSanPham) {
 
         LoaiSanPham old = repository.findById(id).orElseThrow();
 
@@ -37,7 +37,7 @@ public class LoaiSanPhamService {
         return repository.save(old);
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         repository.deleteById(id);
     }
 

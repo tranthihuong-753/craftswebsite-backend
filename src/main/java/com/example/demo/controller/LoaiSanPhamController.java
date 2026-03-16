@@ -20,7 +20,7 @@ public class LoaiSanPhamController {
     }
 
     @GetMapping("/{id}")
-    public LoaiSanPham getById(@PathVariable Integer id) {
+    public LoaiSanPham getById(@PathVariable Long id) {
         return service.getById(id).orElseThrow();
     }
 
@@ -31,14 +31,14 @@ public class LoaiSanPhamController {
 
     @PutMapping("/{id}")
     public LoaiSanPham update(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestBody LoaiSanPham loaiSanPham
     ) {
         return service.update(id, loaiSanPham);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Long id) {
         service.delete(id);
     }
 

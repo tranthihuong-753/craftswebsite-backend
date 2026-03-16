@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.api.SellerRegisterRequest;
+import com.example.demo.dto.SellerRegisterRequest;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.entity.TaiKhoanNganHang;
 import com.example.demo.entity.ThongTinNguoiBan;

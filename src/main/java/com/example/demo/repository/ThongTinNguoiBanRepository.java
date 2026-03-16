@@ -13,4 +13,6 @@ public interface ThongTinNguoiBanRepository extends JpaRepository<ThongTinNguoiB
 
     Optional<ThongTinNguoiBan> findByNguoiDungId(UUID userId);
 
+    
+
 }
