@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +17,7 @@ public class AnhVideoSanPham {
 
     @ManyToOne
     @JoinColumn(name = "AVSP_SP_Id", referencedColumnName = "SP_Id")
+    @JsonIgnore
     private SanPham sanPham;
 
     @Column(name = "AVSP_Link")

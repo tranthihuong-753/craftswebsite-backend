@@ -5,6 +5,7 @@ import com.example.demo.repository.VaiTroApiRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class VaiTroApiService {
     }
 
     // UPDATE
+    @Transactional
     public VaiTroApi update(Long id, VaiTroApi newData) {
 
         VaiTroApi old = repository.findById(id).orElse(null);
@@ -47,6 +49,7 @@ public class VaiTroApiService {
     }
 
     // DELETE
+    @Transactional
     public void delete(Long id) {
         repository.deleteById(id);
     }

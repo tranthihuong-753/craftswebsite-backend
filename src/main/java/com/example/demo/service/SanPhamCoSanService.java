@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.SanPhamCoSanRequest;
+import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.AnhVideoSanPham;
 import com.example.demo.entity.ChungChi;
 import com.example.demo.entity.DanhMuc;
@@ -24,10 +26,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +60,7 @@ public class SanPhamCoSanService {
 
     @Autowired
     private AnhVideoSanPhamRepository anhVideoSanPhamRepository;
+    
     
     // Tạo mới sản phẩm có sẵn
     // loaisanpham duoc admind cap nhat
@@ -133,5 +144,198 @@ public class SanPhamCoSanService {
 
         return sanPhamCoSanRepository.save(sanPhamCoSan);
     }
+
+    // public Page<SellerProductDTO> getProducts(String status,Pageable pageable) {
+
+    //     TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+    //     Page<SanPhamCoSan> page = sanPhamCoSanRepository.findBySanPhamTrangThai(trangThai, pageable);
+
+    //     return new PageImpl<>(
+    //         page.getContent().stream().map(spcs -> {
+
+    //             SellerProductDTO dto = new SellerProductDTO();
+
+    //             dto.setId(spcs.getId());
+
+    //             dto.setGia(spcs.getGia());
+
+    //             dto.setMoTa(spcs.getMoTa());
+
+    //             dto.setSoLuongBanDau(spcs.getSoLuongBanDau());
+
+    //             if (spcs.getSanPham().getLoaiSanPham() != null) {
+    //                 dto.setLoaiSanPham(
+    //                     spcs.getSanPham()
+    //                         .getLoaiSanPham()
+    //                         .getLoai()
+    //                 );
+    //             } else {
+    //                 dto.setLoaiSanPham(null);
+    //             }
+
+    //             dto.setChungChiId(
+    //                     spcs.getSanPham()
+    //                             .getChungChi()
+    //                             .getId()
+    //             );
+
+    //             Long spId = spcs.getSanPham().getId();
+
+    //             AnhVideoSanPham av =
+    //                     anhVideoSanPhamRepository
+    //                             .findFirstBySanPhamIdOrderByThuTuAsc(spId)
+    //                             .orElse(null);
+
+    //             if (av != null) {
+    //                 dto.setImage(av.getLink());
+    //             }
+
+    //             return dto;
+
+    //         }).collect(Collectors.toList()),
+    //         pageable,
+    //         page.getTotalElements()
+    //     );
+    // }
+
+    public Page<SellerProductDTO> getProducts(String status, Pageable pageable) {
+
+        TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+
+        Page<SanPhamCoSan> page =
+                sanPhamCoSanRepository.findBySanPhamTrangThai(trangThai, pageable);
+
+        return new PageImpl<>(
+            page.getContent().stream().map(spcs -> {
+
+                SellerProductDTO dto = new SellerProductDTO();
+
+                dto.setId(spcs.getId());
+                dto.setGia(spcs.getGia());
+                dto.setMoTa(spcs.getMoTa());
+                dto.setSoLuongBanDau(spcs.getSoLuongBanDau());
+
+                if (spcs.getSanPham().getLoaiSanPham() != null) {
+                    dto.setLoaiSanPham(
+                            spcs.getSanPham()
+                                    .getLoaiSanPham()
+                                    .getLoai()
+                    );
+                }
+
+                dto.setChungChiId(
+                        spcs.getSanPham()
+                                .getChungChi()
+                                .getId()
+                );
+
+                Long spId = spcs.getSanPham().getId();
+
+                AnhVideoSanPham av =
+                        anhVideoSanPhamRepository
+                                .findFirstBySanPhamIdOrderByThuTuAsc(spId)
+                                .orElse(null);
+
+                if (av != null) {
+                    dto.setImage(av.getLink());
+                }
+
+                return dto;
+
+            }).collect(Collectors.toList()),
+            pageable,
+            page.getTotalElements()
+        );
+    }
+
+    public SanPhamCoSan getById(Long id) {
+
+        return sanPhamCoSanRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+    }
+    // updateSanPhamCoSan(id, request)
+    @Transactional
+    public SanPhamCoSan updateSanPhamCoSan(
+            Long id,
+            SanPhamCoSanRequest request
+    ) {
+
+        // 1 tìm sản phẩm có sẵn
+        SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        // 2 update thông tin SPCS
+        sanPhamCoSan.setMoTa(request.getMoTa());
+        sanPhamCoSan.setGia(request.getGia());
+        sanPhamCoSan.setGiaGoc(request.getGiaGoc());
+        sanPhamCoSan.setCanNang(request.getCanNang());
+
+        sanPhamCoSan.setChieuDai(request.getChieuDai());
+        sanPhamCoSan.setChieuRong(request.getChieuRong());
+        sanPhamCoSan.setChieuCao(request.getChieuCao());
+
+        sanPhamCoSan.setSoLuongBanDau(request.getSoLuongBanDau());
+        sanPhamCoSan.setSoLuongHienTai(request.getSoLuongHienTai());
+
+        sanPhamCoSan.setTrangThai(request.getTrangThaiSPCS());
+
+        // 3 update sản phẩm gốc
+        SanPham sanPham = sanPhamCoSan.getSanPham();
+
+        sanPham.setTrangThai(request.getTrangThaiSanPham());
+        sanPham.setSoGioLamViecUocTinh(request.getSoGioLamViecUocTinh());
+
+        // 4 update danh mục nếu có thay đổi
+        if (request.getDanhMucId() != null) {
+
+            DanhMuc danhMuc = danhMucRepository
+                    .findById(request.getDanhMucId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục"));
+
+            sanPham.setDanhMuc(danhMuc);
+        }
+
+        // 5 update media
+        if (request.getMediaLinks() != null) {
+
+            // xóa media cũ
+            anhVideoSanPhamRepository.deleteBySanPhamId(sanPham.getId());
+
+            long order = 1;
+
+            for (String link : request.getMediaLinks()) {
+
+                AnhVideoSanPham media = new AnhVideoSanPham();
+                media.setSanPham(sanPham);
+                media.setLink(link);
+                media.setThuTu(order++);
+
+                anhVideoSanPhamRepository.save(media);
+            }
+        }
+
+        return sanPhamCoSanRepository.save(sanPhamCoSan);
+    }
+
+    @Transactional
+    public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id) {
+
+        SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        sanPhamCoSan.setTrangThai(TrangThaiSanPhamCoSan.DA_XOA);
+
+        SanPham sanPham = sanPhamCoSan.getSanPham();
+
+        if (sanPham != null) {
+            sanPham.setTrangThai(TrangThaiSanPham.DA_XOA);
+            sanPhamRepository.save(sanPham);
+        }
+
+        return sanPhamCoSanRepository.save(sanPhamCoSan);
+    } 
 
 }

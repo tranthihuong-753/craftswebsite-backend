@@ -4,6 +4,7 @@ import com.example.demo.entity.ChungChi;
 import com.example.demo.repository.ChungChiRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class ChungChiService {
         return repository.save(chungChi);
     }
 
+    @Transactional
     public ChungChi update(Long id, ChungChi chungChi) {
 
         ChungChi old = repository.findById(id).orElseThrow();
@@ -39,6 +41,7 @@ public class ChungChiService {
         return repository.save(old);
     }
 
+    @Transactional
     public void delete(Long id) {
         repository.deleteById(id);
     }

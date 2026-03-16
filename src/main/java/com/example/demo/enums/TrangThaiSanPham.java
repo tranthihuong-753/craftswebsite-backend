@@ -5,6 +5,7 @@ public enum TrangThaiSanPham {
     LUU_AN,
     LUU_HIEN,
     DANG_BAN,
-    HET_HANG    
-
+    HET_HANG,    
+    VI_PHAM,
+    DA_XOA
 }

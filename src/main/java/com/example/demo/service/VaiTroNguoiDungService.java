@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.VaiTroNguoiDung;
 import com.example.demo.repository.VaiTroNguoiDungRepository;
@@ -26,6 +27,7 @@ public class VaiTroNguoiDungService {
         return vaiTroNguoiDungRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public VaiTroNguoiDung updateVaiTroNguoiDung(UUID id, VaiTroNguoiDung newVTND) {
 
         VaiTroNguoiDung vtnd = vaiTroNguoiDungRepository.findById(id).orElse(null);
@@ -44,6 +46,7 @@ public class VaiTroNguoiDungService {
         return null;
     }
 
+    @Transactional
     public void deleteVaiTroNguoiDung(UUID id) {
         vaiTroNguoiDungRepository.deleteById(id);
     }
