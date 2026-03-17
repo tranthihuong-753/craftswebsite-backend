@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.SanPhamCoSanRequest;
+import com.example.demo.dto.SanPhamModerationDTO;
 import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.AnhVideoSanPham;
 import com.example.demo.entity.ChungChi;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
@@ -332,22 +334,82 @@ public class SanPhamCoSanService {
     }
 
     @Transactional
-    public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id) {
+    public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id, String tt) {
 
         SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
-        sanPhamCoSan.setTrangThai(TrangThaiSanPhamCoSan.DA_XOA);
+        TrangThaiSanPhamCoSan ttspcs = TrangThaiSanPhamCoSan.valueOf(tt);
+        sanPhamCoSan.setTrangThai(ttspcs);
 
         SanPham sanPham = sanPhamCoSan.getSanPham();
 
         if (sanPham != null) {
-            sanPham.setTrangThai(TrangThaiSanPham.DA_XOA);
+            TrangThaiSanPham ttsp = TrangThaiSanPham.valueOf(tt);
+            sanPham.setTrangThai(ttsp);
             sanPhamRepository.save(sanPham);
         }
 
         return sanPhamCoSanRepository.save(sanPhamCoSan);
     } 
+    
+    public Page<SanPhamModerationDTO> getModerationProducts(
+            String status,
+            String search,
+            int page,
+            int size,
+            String sort
+    ) {
+
+        TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+
+        Sort sortObj = sort.equalsIgnoreCase("asc")
+                ? Sort.by("sanPham.ngayTao").ascending()
+                : Sort.by("sanPham.ngayTao").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+
+        Page<SanPhamCoSan> pageResult;
+
+        if (search != null && !search.isEmpty()) {
+            pageResult = sanPhamCoSanRepository
+                    .findBySanPhamTrangThaiAndTimKiemContaining(trangThai, search, pageable);
+        } else {
+            pageResult = sanPhamCoSanRepository
+                    .findBySanPhamTrangThai(trangThai, pageable);
+        }
+
+        return new PageImpl<>(
+                pageResult.getContent().stream().map(spcs -> {
+
+                    SanPhamModerationDTO dto = new SanPhamModerationDTO(
+                            spcs.getId(),
+                            null,
+                            spcs.getSanPham()
+                                    .getThongTinNguoiBan()
+                                    .getNguoiDung()
+                                    .getTen(),
+                            spcs.getSanPham().getNgayTao()
+                    );
+
+                    Long spId = spcs.getSanPham().getId();
+
+                    AnhVideoSanPham av =
+                            anhVideoSanPhamRepository
+                                    .findFirstBySanPhamIdOrderByThuTuAsc(spId)
+                                    .orElse(null);
+
+                    if (av != null) {
+                        dto.setAnhSanPham(av.getLink());
+                    }
+
+                    return dto;
+
+                }).toList(),
+                pageable,
+                pageResult.getTotalElements()
+        );
+    }
 
 }

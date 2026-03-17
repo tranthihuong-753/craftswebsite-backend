@@ -1,0 +1,21 @@
+package com.example.demo.enums;
+
+public enum NKKT_HanhDong {
+
+    DANG_NHAP_THANH_CONG,
+    DANG_NHAP_THAT_BAI,
+
+    TAO_DON_HANG,
+    THAY_DOI_TRANG_THAI_DON_HANG,
+    HUY_DON_HANG,
+
+    XAC_NHAN_THANH_TOAN,
+    HUY_THANH_TOAN,
+
+    TAO_SAN_PHAM,
+    SUA_SAN_PHAM,
+    XOA_SAN_PHAM,
+
+    CAP_NHAT_HOP_DONG
+
+}

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entity.AnhVideo;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.service.NguoiDungService;
 
@@ -116,40 +118,55 @@ public class NguoiDungController {
         String username = body.get("username");
         String password = body.get("password");
 
-        UUID userId = nguoiDungService.loginAndGetUserId(username, password);
+        Map<String,Object> result = nguoiDungService.login(username,password);
 
-        if(userId == null){
+        if(result == null){
             return ResponseEntity.status(401).body(
-                    Map.of("success", false, "message", "Sai tài khoản hoặc mật khẩu")
+                    Map.of(
+                            "success", false,
+                            "message", "Sai tài khoản hoặc mật khẩu"
+                    )
             );
         }
 
         return ResponseEntity.ok(
-                Map.of("success", true, "userId", userId)
+                Map.of(
+                        "success", true,
+                        "userId", result.get("userId"),
+                        "roles", result.get("roles")
+                )
         );
     }
-
+        
     // tu id lay anhchandung 
-    @GetMapping("/{id}/anh-chan-dung")
-    public Map<String,Object> getAnhChanDungById(@PathVariable UUID id) {
+@GetMapping("/{id}/anh-chan-dung")
+public Map<String,Object> getAnhChanDungById(@PathVariable UUID id) {
 
-        String anhChanDungUrl = nguoiDungService.getAnhChanDungById(id).getLink();
+    AnhVideo anh = nguoiDungService.getAnhChanDungById(id);
 
-        return Map.of(
-                "success", true,
-                "anhChanDungUrl", anhChanDungUrl
-        );
+    String anhChanDungUrl = null;
+
+    if (anh != null) {
+        anhChanDungUrl = anh.getLink();
     }
 
+    Map<String,Object> res = new HashMap<>();
+    res.put("success", true);
+    res.put("anhChanDungUrl", anhChanDungUrl);
+
+    return res;
+}
     // tu id lay ten nguoi dung
     @GetMapping("/{id}/ten")
-    public Map<String,Object> getTenById(@PathVariable UUID id) {
+    public ResponseEntity<?> getTenById(@PathVariable UUID id) {
 
         String ten = nguoiDungService.getTenById(id);
 
-        return Map.of(
-                "success", true,
-                "ten", ten
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true,
+                        "ten", ten
+                )
         );
     }
 

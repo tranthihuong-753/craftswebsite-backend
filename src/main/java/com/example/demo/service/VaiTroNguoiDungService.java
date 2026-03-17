@@ -50,4 +50,6 @@ public class VaiTroNguoiDungService {
     public void deleteVaiTroNguoiDung(UUID id) {
         vaiTroNguoiDungRepository.deleteById(id);
     }
+
+    
 }
