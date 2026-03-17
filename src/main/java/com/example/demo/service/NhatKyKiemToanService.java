@@ -10,6 +10,8 @@ import com.example.demo.repository.NhatKyKiemToanRepository;
 import com.example.demo.repository.SanPhamCoSanRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,9 +25,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NhatKyKiemToanService {
 
-    private final NhatKyKiemToanRepository repository;
-
-    private final SanPhamCoSanRepository sanPhamCoSanRepository;
+    @Autowired
+    private NhatKyKiemToanRepository repository;
 
     private final SanPhamCoSanService sanPhamCoSanService;
 
