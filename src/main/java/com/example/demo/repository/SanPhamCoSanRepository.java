@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.dto.SanPhamModerationDTO;
+import com.example.demo.dto.SanPhamModerationProjection;
 import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.enums.TrangThaiSanPham;
 import com.example.demo.enums.TrangThaiSanPhamCoSan;
@@ -43,26 +44,107 @@ public interface SanPhamCoSanRepository extends JpaRepository<SanPhamCoSan, Long
             Pageable pageable
     );
 
-    // @Query("SELECT spcs.id as id, " +
-    //        "avsp.url as anhSanPham, " +
-    //        "nd.ten as tenSeller, " +
-    //        "sp.ngayTao as ngayTao " +
-    //        "FROM SanPhamCoSan spcs " +
-    //        "JOIN spcs.sanPham sp " +
-    //        "JOIN sp.thongTinNguoiBan ttnb " +
-    //        "JOIN ttnb.nguoiDung nd " +
-    //        "LEFT JOIN AnhVideoSanPham avsp ON avsp.sanPham = sp. id AND avsp.isMain = true " +
-    //        "WHERE spcs.trangThai = :status " +
-    //        "AND (:search IS NULL OR :search = '' OR spcs.timKiem LIKE %:search%)")
-    // Page<SanPhamModerationDTO> findModerationProducts(
-    //         @Param("status") TrangThaiSanPhamCoSan status,
-    //         @Param("search") String search,
-    //         Pageable pageable);
-
     Page<SanPhamCoSan> findBySanPhamTrangThaiAndTimKiemContaining(
         TrangThaiSanPham trangThai,
         String search,
         Pageable pageable
     );
+
+    @Query("""
+    SELECT 
+        spcs.id as spcsId,
+        nd.tenDangNhap as tenSeller,
+        av.link as anhSanPham,
+        sp.ngayTao as ngayTao,
+
+        log.ngayTao as ngayXuLy,
+        log.idTacNhan as adminId,
+        log.sieuDuLieu as sieuDuLieu
+
+    FROM SanPhamCoSan spcs
+
+    JOIN spcs.sanPham sp
+    JOIN sp.thongTinNguoiBan tt
+    JOIN tt.nguoiDung nd
+
+    LEFT JOIN AnhVideoSanPham av 
+        ON av.sanPham.id = sp.id
+        AND av.thuTu = 1
+
+    LEFT JOIN NhatKyKiemToan log
+        ON log.idMucTieu = sp.id
+        AND log.loaiMucTieu = com.example.demo.enums.NKKT_LoaiMucTieu.SAN_PHAM
+        AND (
+            (:trangThai = com.example.demo.enums.TrangThaiSanPham.DANG_BAN 
+                AND log.hanhDong = com.example.demo.enums.NKKT_HanhDong.TAO_SAN_PHAM)
+            OR
+            (:trangThai = com.example.demo.enums.TrangThaiSanPham.VI_PHAM 
+                AND log.hanhDong = com.example.demo.enums.NKKT_HanhDong.XOA_SAN_PHAM)
+        )
+
+    WHERE sp.trangThai = :trangThai
+    AND (
+        :search IS NULL OR :search = '' OR
+        LOWER(nd.tenDangNhap) LIKE LOWER(CONCAT('%', :search, '%'))
+    )
+    """)
+    Page<SanPhamModerationProjection> getModerationProductsFull(
+        @Param("trangThai") TrangThaiSanPham trangThai,
+        @Param("search") String search,
+        Pageable pageable
+    );
+
+// @Query(value = """
+// SELECT 
+//     spcs.id as spcsId,
+//     nd.ten_dang_nhap as tenSeller,
+//     av.link as anhSanPham,
+//     sp.ngay_tao as ngayTao,
+
+//     log.ngay_tao as ngayXuLy,
+//     log.id_tac_nhan as adminId,
+//     log.sieu_du_lieu as sieuDuLieu
+
+// FROM tbl_san_pham_co_san spcs
+
+// JOIN tbl_san_pham sp
+//     ON spcs.san_pham_id = sp.id
+
+// JOIN tbl_thong_tin_nguoi_ban tt
+//     ON sp.ttnb_id = tt.id
+
+// JOIN tbl_nguoi_dung nd
+//     ON tt.nd_id = nd.id
+
+// LEFT JOIN tbl_anh_video_san_pham av
+//     ON av.san_pham_id = sp.id
+//     AND av.thu_tu = 1
+
+// LEFT JOIN tbl_nhat_ky_kiem_toan log
+//     ON log.id_muc_tieu = sp.id
+
+// WHERE sp.trang_thai = :trangThai
+// AND (
+//     :search IS NULL OR :search = '' OR
+
+//     CONCAT(
+//         LOWER(
+//             REPLACE(
+//                 REPLACE(nd.ten_dang_nhap, ' ', ''),
+//                 'đ', 'd'
+//             )
+//         ),
+//         DATE_FORMAT(sp.ngay_tao, '%d%m%Y')
+//     )
+//     LIKE CONCAT('%', :search, '%')
+// )
+
+// ORDER BY sp.ngay_tao DESC
+// """, nativeQuery = true)
+// Page<SanPhamModerationProjection> getModerationProductsFull(
+//     @Param("trangThai") String trangThai,
+//     @Param("search") String search,
+//     Pageable pageable
+// );
 
 }
