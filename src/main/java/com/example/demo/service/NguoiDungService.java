@@ -142,6 +142,9 @@ public class NguoiDungService {
     }
 
     public NguoiDung datMatKhau(UUID userId, String matKhau, String tenDangNhap) {
+        if (matKhau == null || matKhau.length() < 8) {
+            throw new RuntimeException("Mật khẩu phải từ 8 ký tự trở lên");
+        }
 
         NguoiDung nd = nguoiDungRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
