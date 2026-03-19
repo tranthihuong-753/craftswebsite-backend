@@ -35,4 +35,5 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, UUID> {
     @Query("SELECT n FROM NguoiDung n WHERE n.id = :ndId")
     Optional<NguoiDung> findFirstByNguoiDungId(UUID ndId);
 
+    boolean existsByTenDangNhap(String tenDangNhap);
 } 

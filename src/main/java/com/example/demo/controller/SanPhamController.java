@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.SanPhamModerationDTO;
 import com.example.demo.entity.SanPham;
 import com.example.demo.service.SanPhamService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
+
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/san-pham")

@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.SanPhamCoSanRequest;
+import com.example.demo.dto.SanPhamModerationDTO;
 import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.SanPhamCoSan;
+import com.example.demo.enums.TrangThaiSanPham;
 import com.example.demo.enums.TrangThaiSanPhamCoSan;
 import com.example.demo.service.SanPhamCoSanService;
 import lombok.RequiredArgsConstructor;
@@ -73,11 +75,22 @@ public class SanPhamCoSanController {
     @PutMapping("/{id}/delete")
     public ResponseEntity<?> deleteSanPham(@PathVariable Long id) {
 
-        SanPhamCoSan result = sanPhamCoSanService.updateSanPhamCoSanTrangThai(id);
+        SanPhamCoSan result = sanPhamCoSanService.updateSanPhamCoSanTrangThai(id, "DA_XOA");
 
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/moderation-products")
+    public ResponseEntity<Page<SanPhamModerationDTO>> getModerationProducts(
+            @RequestParam String status,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "desc") String sort) {
+        
+        Page<SanPhamModerationDTO> result = sanPhamCoSanService.getModerationProducts(status, search, page, size, sort);
+        return ResponseEntity.ok(result);
+    }
 }
 
 // {
