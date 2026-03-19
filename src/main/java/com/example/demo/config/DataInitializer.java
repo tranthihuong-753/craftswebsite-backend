@@ -1,9 +1,14 @@
 package com.example.demo.config;
 
 import com.example.demo.entity.DanhMuc;
+import com.example.demo.entity.NguoiDung;
 import com.example.demo.entity.VaiTro;
+import com.example.demo.entity.VaiTroNguoiDung;
+import com.example.demo.enums.ND_Trangthaixacthuc;
 import com.example.demo.enums.TrangThaiDanhMuc;
 import com.example.demo.repository.DanhMucRepository;
+import com.example.demo.repository.NguoiDungRepository;
+import com.example.demo.repository.VaiTroNguoiDungRepository;
 import com.example.demo.repository.VaiTroRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +23,8 @@ import org.springframework.context.annotation.Configuration;
 public class DataInitializer {
 
     private final VaiTroRepository vaiTroRepository;
+    private final NguoiDungRepository nguoiDungRepository;
+    private final VaiTroNguoiDungRepository vtndRepository;
 
     @Bean
     CommandLineRunner initRoles() {
@@ -128,6 +135,36 @@ public class DataInitializer {
 
                 danhMucRepository.save(dm);
             }
+        };
+    }
+
+    @Bean
+    CommandLineRunner initAdmin() {
+        return args -> {
+
+            String username = "superadmin";
+
+            if (nguoiDungRepository.existsByTenDangNhap(username)) {
+                return;
+            }
+
+            NguoiDung nd = new NguoiDung();
+            nd.setTenDangNhap(username);
+            nd.setMatKhau("123456"); // sau này nên encode
+            nd.setTrangThaiXacThuc(ND_Trangthaixacthuc.CCCD_PASS);
+
+            NguoiDung saved = nguoiDungRepository.save(nd);
+
+            VaiTro role = vaiTroRepository.findByLoai("SUPER_ADMIN");
+
+            VaiTroNguoiDung vtnd = new VaiTroNguoiDung();
+            vtnd.setNguoiDung(saved);
+            vtnd.setVaiTro(role);
+
+            vtndRepository.save(vtnd);
+
+            System.out.println("SUPER_ADMIN created: superadmin / 123456");
+
         };
     }
 

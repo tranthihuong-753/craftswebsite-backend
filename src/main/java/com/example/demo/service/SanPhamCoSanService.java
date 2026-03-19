@@ -1,21 +1,28 @@
 package com.example.demo.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.dto.SanPhamCoSanRequest;
+import com.example.demo.dto.SanPhamModerationDTO;
+import com.example.demo.dto.SanPhamModerationProjection;
 import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.AnhVideoSanPham;
 import com.example.demo.entity.ChungChi;
 import com.example.demo.entity.DanhMuc;
+import com.example.demo.entity.NhatKyKiemToan;
 import com.example.demo.entity.SanPham;
 import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.entity.ThongTinNguoiBan;
 import com.example.demo.enums.LoaiChungChi;
 import com.example.demo.enums.LoaiMucTieuChungChi;
+import com.example.demo.enums.NKKT_HanhDong;
+import com.example.demo.enums.NKKT_LoaiMucTieu;
 import com.example.demo.enums.TrangThaiChungChi;
 import com.example.demo.enums.TrangThaiSanPham;
 import com.example.demo.enums.TrangThaiSanPhamCoSan;
 import com.example.demo.repository.AnhVideoSanPhamRepository;
 import com.example.demo.repository.ChungChiRepository;
 import com.example.demo.repository.DanhMucRepository;
+import com.example.demo.repository.NhatKyKiemToanRepository;
 import com.example.demo.repository.SanPhamCoSanRepository;
 import com.example.demo.repository.SanPhamRepository;
 import com.example.demo.repository.ThongTinNguoiBanRepository;
@@ -25,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +69,9 @@ public class SanPhamCoSanService {
 
     @Autowired
     private AnhVideoSanPhamRepository anhVideoSanPhamRepository;
+
+    @Autowired
+    private NhatKyKiemToanRepository nhatKyKiemToanRepository;
     
     
     // Tạo mới sản phẩm có sẵn
@@ -332,6 +344,194 @@ public class SanPhamCoSanService {
     }
 
     @Transactional
+    public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id, String tt) {
+
+        SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        TrangThaiSanPhamCoSan ttspcs = TrangThaiSanPhamCoSan.valueOf(tt);
+        sanPhamCoSan.setTrangThai(ttspcs);
+
+        SanPham sanPham = sanPhamCoSan.getSanPham();
+
+        if (sanPham != null) {
+            TrangThaiSanPham ttsp = TrangThaiSanPham.valueOf(tt);
+            sanPham.setTrangThai(ttsp);
+            sanPhamRepository.save(sanPham);
+        }
+
+        return sanPhamCoSanRepository.save(sanPhamCoSan);
+    } 
+    
+    // public Page<SanPhamModerationDTO> getModerationProducts(
+    //         String status,
+    //         String search,
+    //         int page,
+    //         int size,
+    //         String sort
+    // ) {
+
+    //     TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+
+    //     Sort sortObj = sort.equalsIgnoreCase("asc")
+    //             ? Sort.by("sanPham.ngayTao").ascending()
+    //             : Sort.by("sanPham.ngayTao").descending();
+
+    //     Pageable pageable = PageRequest.of(page, size, sortObj);
+
+    //     Page<SanPhamCoSan> pageResult;
+
+    //     if (search != null && !search.isEmpty()) {
+    //         pageResult = sanPhamCoSanRepository
+    //                 .findBySanPhamTrangThaiAndTimKiemContaining(trangThai, search, pageable);
+    //     } else {
+    //         pageResult = sanPhamCoSanRepository
+    //                 .findBySanPhamTrangThai(trangThai, pageable);
+    //     }
+
+    //     return new PageImpl<>(
+    //         pageResult.getContent().stream().map(spcs -> {
+
+    //             SanPhamModerationDTO dto = new SanPhamModerationDTO(
+    //                     spcs.getId(),
+    //                     null,
+    //                     spcs.getSanPham()
+    //                             .getThongTinNguoiBan()
+    //                             .getNguoiDung()
+    //                             .getTen(),
+    //                     spcs.getSanPham().getNgayTao()
+    //             );
+
+    //             Long spId = spcs.getSanPham().getId();
+
+    //             // ảnh
+    //             AnhVideoSanPham av =
+    //                     anhVideoSanPhamRepository
+    //                             .findFirstBySanPhamIdOrderByThuTuAsc(spcs.getSanPham().getId())
+    //                             .orElse(null);
+
+    //             if (av != null) {
+    //                 dto.setAnhSanPham(av.getLink());
+    //             }
+
+    //             // 🔥 LẤY LOG THEO STATUS
+    //             // ==============================
+
+    //             Optional<NhatKyKiemToan> logOpt = Optional.empty();
+
+    //             if (trangThai == TrangThaiSanPham.DANG_BAN) {
+
+    //                 // 👉 sản phẩm đã DUYỆT
+    //                 logOpt = nhatKyKiemToanRepository
+    //                         .findTopByIdMucTieuAndLoaiMucTieuAndHanhDongOrderByNgayTaoDesc(
+    //                                 spId,
+    //                                 NKKT_LoaiMucTieu.SAN_PHAM,
+    //                                 NKKT_HanhDong.TAO_SAN_PHAM
+    //                         );
+
+    //             } else if (trangThai == TrangThaiSanPham.VI_PHAM) {
+
+    //                 // 👉 sản phẩm VI PHẠM
+    //                 logOpt = nhatKyKiemToanRepository
+    //                         .findTopByIdMucTieuAndLoaiMucTieuAndHanhDongOrderByNgayTaoDesc(
+    //                                 spId,
+    //                                 NKKT_LoaiMucTieu.SAN_PHAM,
+    //                                 NKKT_HanhDong.XOA_SAN_PHAM
+    //                         );
+    //             }
+
+    //             // ==============================
+    //             // 🔥 MAP LOG → DTO
+    //             // ==============================
+
+    //             logOpt.ifPresent(log -> {
+
+    //                 dto.setNgayXuLy(log.getNgayTao());
+    //                 dto.setAdminId(log.getIdTacNhan());
+
+    //                 try {
+    //                     ObjectMapper mapper = new ObjectMapper();
+    //                     Map<String, Object> map = mapper.readValue(
+    //                             log.getSieuDuLieu(),
+    //                             Map.class
+    //                     );
+
+    //                     dto.setLyDo((String) map.get("ly_do"));
+
+    //                 } catch (Exception e) {
+    //                     dto.setLyDo("-");
+    //                 }
+    //             });
+
+    //             return dto;
+
+    //         }).toList(),
+    //         pageable,
+    //         pageResult.getTotalElements()
+    //     );
+    // }
+
+    public Page<SanPhamModerationDTO> getModerationProducts(
+            String status,
+            String search,
+            int page,
+            int size,
+            String sort
+    ) {
+
+        TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+
+        Sort sortObj = sort.equalsIgnoreCase("asc")
+                ? Sort.by("ngayTao").ascending()
+                : Sort.by("ngayTao").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+
+        // 🔥 gọi query FULL JOIN
+        Page<SanPhamModerationProjection> pageResult =
+                sanPhamCoSanRepository.getModerationProductsFull(trangThai, search, pageable);
+                // sanPhamCoSanRepository.getModerationProductsFull(trangThai.name(), search, pageable);
+
+        return new PageImpl<>(
+                pageResult.getContent().stream().map(p -> {
+
+                    SanPhamModerationDTO dto = new SanPhamModerationDTO(
+                            p.getSpcsId(),
+                            p.getAnhSanPham(),
+                            p.getTenSeller(),
+                            p.getNgayTao()
+                    );
+
+                    // chỉ set log khi có (DANG_BAN, VI_PHAM)
+                    dto.setNgayXuLy(p.getNgayXuLy());
+                    dto.setAdminId(p.getAdminId());
+
+                    // parse JSON ly_do
+                    if (p.getSieuDuLieu() != null) {
+                        try {
+                            ObjectMapper mapper = new ObjectMapper();
+                            Map<String, Object> map = mapper.readValue(
+                                    p.getSieuDuLieu(),
+                                    Map.class
+                            );
+
+                            dto.setLyDo((String) map.get("ly_do"));
+
+                        } catch (Exception e) {
+                            dto.setLyDo("-");
+                        }
+                    }
+
+                    return dto;
+
+                }).toList(),
+                pageable,
+                pageResult.getTotalElements()
+        );
+    }
+
+        @Transactional
     public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id) {
 
         SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository

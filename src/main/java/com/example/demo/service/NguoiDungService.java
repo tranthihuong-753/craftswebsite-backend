@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -155,14 +157,16 @@ public class NguoiDungService {
 
         nd.setTrangThaiXacThuc(ND_Trangthaixacthuc.CCCD_PASS);
 
+        NguoiDung saved = nguoiDungRepository.save(nd);
+
         // gán role BUYER
         VaiTro roleBuyer = vaiTroRepository.findByLoai("BUYER");
         VaiTroNguoiDung vtnd = new VaiTroNguoiDung();
-        vtnd.setNguoiDung(nd);
+        vtnd.setNguoiDung(saved);
         vtnd.setVaiTro(roleBuyer);
         vtndRepository.save(vtnd);
 
-        return nguoiDungRepository.save(nd);
+        return saved;
     }
 
     public List<String> getAllTenDangNhap() {
@@ -180,7 +184,54 @@ public class NguoiDungService {
     //     return user.getMatKhau().equals(password);
     // }
 
-    public UUID loginAndGetUserId(String username, String password) {
+    public Map<String, Object> login(String username, String password) {
+
+        Optional<NguoiDung> userOpt =
+                nguoiDungRepository.findByTenDangNhapAndMatKhau(username, password);
+
+        if(userOpt.isEmpty()) return null;
+
+        NguoiDung user = userOpt.get();
+
+        if(!user.getMatKhau().equals(password)){
+            return null;
+        }
+
+        UUID userId = user.getId();
+
+        List<VaiTroNguoiDung> list =
+                vtndRepository.findByNguoiDung_Id(userId);
+
+        List<String> roles = list.stream()
+                .map(v -> v.getVaiTro().getLoai())
+                .toList();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("userId", userId);
+        result.put("roles", roles);
+
+        return result;
+    }
+
+    // tu id lay anhchandung 
+    public AnhVideo getAnhChanDungById(UUID id) {
+        return nguoiDungRepository.findAnhChanDungById(id)
+                .orElse(null);
+    }
+
+    // tu id lay ten nguoi dung
+    public String getTenById(UUID id) {
+
+        Optional<String> tenOpt = nguoiDungRepository.findTenById(id);
+
+        if (tenOpt.isEmpty() || tenOpt.get() == null || tenOpt.get().isBlank()) {
+            return "Admin";
+        }
+
+        return tenOpt.get();
+    }
+
+        public UUID loginAndGetUserId(String username, String password) {
 
         Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhapAndMatKhau(username, password);
 
@@ -195,15 +246,4 @@ public class NguoiDungService {
         return user.getId();
     }
 
-    // tu id lay anhchandung 
-    public AnhVideo getAnhChanDungById(UUID id) {
-        return nguoiDungRepository.findAnhChanDungById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh chân dung"));
-    }
-
-    // tu id lay ten nguoi dung
-    public String getTenById(UUID id) {
-        return nguoiDungRepository.findTenById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tên người dùng"));
-    }
 }
