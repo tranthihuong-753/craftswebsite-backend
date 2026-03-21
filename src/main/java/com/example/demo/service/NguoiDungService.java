@@ -144,6 +144,9 @@ public class NguoiDungService {
     }
 
     public NguoiDung datMatKhau(UUID userId, String matKhau, String tenDangNhap) {
+        if (matKhau == null || matKhau.length() < 8) {
+            throw new RuntimeException("Mật khẩu phải từ 8 ký tự trở lên");
+        }
 
         NguoiDung nd = nguoiDungRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
@@ -226,6 +229,21 @@ public class NguoiDungService {
         }
 
         return tenOpt.get();
+    }
+
+        public UUID loginAndGetUserId(String username, String password) {
+
+        Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhapAndMatKhau(username, password);
+
+        if(userOpt.isEmpty()) return null;
+
+        NguoiDung user = userOpt.get();
+
+        if(!user.getMatKhau().equals(password)){
+            return null;
+        }
+
+        return user.getId();
     }
 
 }

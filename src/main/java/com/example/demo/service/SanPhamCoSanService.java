@@ -531,4 +531,23 @@ public class SanPhamCoSanService {
         );
     }
 
+        @Transactional
+    public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id) {
+
+        SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        sanPhamCoSan.setTrangThai(TrangThaiSanPhamCoSan.DA_XOA);
+
+        SanPham sanPham = sanPhamCoSan.getSanPham();
+
+        if (sanPham != null) {
+            sanPham.setTrangThai(TrangThaiSanPham.DA_XOA);
+            sanPhamRepository.save(sanPham);
+        }
+
+        return sanPhamCoSanRepository.save(sanPhamCoSan);
+    } 
+
 }

@@ -27,8 +27,8 @@ public class NhatKyKiemToanService {
 
     @Autowired
     private NhatKyKiemToanRepository repository;
-
-    private final SanPhamCoSanService sanPhamCoSanService;
+    @Autowired
+    private SanPhamCoSanService sanPhamCoSanService;
 
     public NhatKyKiemToan save(NhatKyKiemToan log) {
 
