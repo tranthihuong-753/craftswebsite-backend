@@ -34,6 +34,9 @@ public class NguoiDungService {
 
     @Autowired
     private VaiTroNguoiDungRepository vtndRepository;
+
+    @Autowired
+    private JwtService jwtService;
     
     // CREATE
     public NguoiDung createNguoiDung(NguoiDung nguoiDung) {
@@ -173,17 +176,6 @@ public class NguoiDungService {
         return nguoiDungRepository.findAllTenDangNhap();
     }
 
-    // public boolean login(String username, String password) {
-
-    //     Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhap(username);
-
-    //     if(userOpt.isEmpty()) return false;
-
-    //     NguoiDung user = userOpt.get();
-
-    //     return user.getMatKhau().equals(password);
-    // }
-
     public Map<String, Object> login(String username, String password) {
 
         Optional<NguoiDung> userOpt =
@@ -207,7 +199,10 @@ public class NguoiDungService {
                 .toList();
 
         Map<String, Object> result = new HashMap<>();
-        result.put("userId", userId);
+        // result.put("userId", userId);
+
+        String token = jwtService.generateToken(user);
+        result.put("token", token);
         result.put("roles", roles);
 
         return result;
@@ -231,7 +226,7 @@ public class NguoiDungService {
         return tenOpt.get();
     }
 
-        public UUID loginAndGetUserId(String username, String password) {
+    public UUID loginAndGetUserId(String username, String password) {
 
         Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhapAndMatKhau(username, password);
 

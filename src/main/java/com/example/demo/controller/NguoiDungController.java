@@ -20,6 +20,8 @@ import com.example.demo.entity.AnhVideo;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.service.NguoiDungService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/nguoi-dung")
 public class NguoiDungController {
@@ -132,41 +134,43 @@ public class NguoiDungController {
         return ResponseEntity.ok(
                 Map.of(
                         "success", true,
-                        "userId", result.get("userId"),
+                        "token", result.get("token"),
                         "roles", result.get("roles")
                 )
         );
     }
         
     // tu id lay anhchandung 
-@GetMapping("/{id}/anh-chan-dung")
-public Map<String,Object> getAnhChanDungById(@PathVariable UUID id) {
+    @GetMapping("/me/anh-chan-dung")
+    public Map<String,Object> getMyAnhChanDung(HttpServletRequest request) {
 
-    AnhVideo anh = nguoiDungService.getAnhChanDungById(id);
+        String userId = (String) request.getAttribute("userId");
 
-    String anhChanDungUrl = null;
+        AnhVideo anh = nguoiDungService.getAnhChanDungById(
+                UUID.fromString(userId)
+        );
 
-    if (anh != null) {
-        anhChanDungUrl = anh.getLink();
+        String url = (anh != null) ? anh.getLink() : null;
+
+        return Map.of(
+            "success", true,
+            "anhChanDungUrl", url
+        );
     }
 
-    Map<String,Object> res = new HashMap<>();
-    res.put("success", true);
-    res.put("anhChanDungUrl", anhChanDungUrl);
-
-    return res;
-}
     // tu id lay ten nguoi dung
-    @GetMapping("/{id}/ten")
-    public ResponseEntity<?> getTenById(@PathVariable UUID id) {
+    @GetMapping("/me/ten")
+    public Map<String,Object> getMyTen(HttpServletRequest request) {
 
-        String ten = nguoiDungService.getTenById(id);
+        String userId = (String) request.getAttribute("userId");
 
-        return ResponseEntity.ok(
-                Map.of(
-                        "success", true,
-                        "ten", ten
-                )
+        String ten = nguoiDungService.getTenById(
+                UUID.fromString(userId)
+        );
+
+        return Map.of(
+            "success", true,
+            "ten", ten
         );
     }
 

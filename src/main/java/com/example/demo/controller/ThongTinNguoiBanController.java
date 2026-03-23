@@ -6,7 +6,10 @@ import com.example.demo.entity.ThongTinNguoiBan;
 import com.example.demo.repository.NguoiDungRepository;
 import com.example.demo.repository.TaiKhoanNganHangRepository;
 import com.example.demo.repository.ThongTinNguoiBanRepository;
+import com.example.demo.service.JwtService;
 import com.example.demo.service.ThongTinNguoiBanService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ public class ThongTinNguoiBanController {
 
     @Autowired
     private ThongTinNguoiBanService service;
+
+    @Autowired
+    private JwtService jwtService;
 
     // @PostMapping
     // public ThongTinNguoiBan createThongTinNguoiBan(@RequestBody ThongTinNguoiBan data) {
@@ -81,10 +87,14 @@ public class ThongTinNguoiBanController {
         }
     }
 
-    @GetMapping("/by-user/{userId}")
-    public ResponseEntity<UUID> getSellerId(@PathVariable UUID userId) {
+    @GetMapping("/me")
+    public ResponseEntity<UUID> getMySellerId(HttpServletRequest request) {
 
-        UUID sellerId = service.getSellerIdByUserId(userId);
+        String userId = (String) request.getAttribute("userId");
+
+        UUID sellerId = service.getSellerIdByUserId(
+                UUID.fromString(userId)
+        );
 
         if (sellerId == null) {
             return ResponseEntity.notFound().build();
