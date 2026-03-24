@@ -68,37 +68,91 @@ public class NguoiDungController {
 
     // TAo bang sdt 
     @PostMapping("/create/sdt")
-    public NguoiDung taoBangSDT(@RequestBody Map<String,String> body) {
+    public ResponseEntity<?> taoBangSDT(@RequestBody Map<String,String> body) {
         String sdt = body.get("sdt");
 
-        return nguoiDungService.dangKyBangSDT(sdt);
+        Map<String, Object> result = nguoiDungService.dangKyBangSDT(sdt);
+
+        if(result == null){
+            return ResponseEntity.status(401).body(
+                    Map.of(
+                            "success", false,
+                            "message", "Số điện thoại không hợp lệ."
+                    )
+            );
+        }
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true
+                        ,"token", result.get("token")
+                        // ,"roles", result.get("roles")
+                )
+        );
     }
 
     // update voi cccd 
     @PostMapping("/scan-cccd")
-    public NguoiDung scanCCCD(@RequestBody Map<String,String> body) {
-
+    public ResponseEntity<?> scanCCCD(
+        @RequestBody Map<String,String> body
+        , HttpServletRequest request
+    ) {
         String imageUrl = body.get("imageUrl");
-        String userId = body.get("userId");
+        String userId = (String) request.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Token không hợp lệ");
+        }
+        NguoiDung nd = nguoiDungService.taoNguoiDungTuCCCD(
+            uid,
+            imageUrl
+        );
 
-        return nguoiDungService.taoNguoiDungTuCCCD(
-                UUID.fromString(userId),
-                imageUrl
+        return ResponseEntity.ok(
+            Map.of(
+                "ten", nd.getTen(),
+                "cccd", nd.getCccd()
+            )
         );
     }
 
-
     @PostMapping("/set-password")
-    public NguoiDung setPassword(@RequestBody Map<String,String> body){
+    public ResponseEntity<?> setPassword(
+        @RequestBody Map<String,String> body
+        , HttpServletRequest request
+    ){
+        String userId = (String) request.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
 
-        String userId = body.get("userId");
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Token không hợp lệ");
+        }
+
+
         String password = body.get("password");
         String tenDangNhap = body.get("tenDangNhap");
         
-        return nguoiDungService.datMatKhau(
-                UUID.fromString(userId),
-                password,
-                tenDangNhap
+        NguoiDung nd = nguoiDungService.datMatKhau(
+            uid,
+            password,
+            tenDangNhap
+        );
+
+        return ResponseEntity.ok(
+            Map.of(
+                "tenDangNhap", nd.getTenDangNhap(),
+                "trangThaiXacThuc", nd.getTrangThaiXacThuc()
+            )
         );
     }
 
@@ -142,19 +196,40 @@ public class NguoiDungController {
         
     // tu id lay anhchandung 
     @GetMapping("/me/anh-chan-dung")
-    public Map<String,Object> getMyAnhChanDung(HttpServletRequest request) {
+    public ResponseEntity<?> getMyAnhChanDung(HttpServletRequest request) {
 
         String userId = (String) request.getAttribute("userId");
 
-        AnhVideo anh = nguoiDungService.getAnhChanDungById(
-                UUID.fromString(userId)
-        );
+        if (userId == null) {
+            return ResponseEntity.status(401).body(
+                Map.of(
+                    "success", false,
+                    "message", "Unauthorized"
+                )
+            );
+        }
+
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(
+                Map.of(
+                    "success", false,
+                    "message", "Token không hợp lệ"
+                )
+            );
+        }
+
+        AnhVideo anh = nguoiDungService.getAnhChanDungById(uid);
 
         String url = (anh != null) ? anh.getLink() : null;
 
-        return Map.of(
-            "success", true,
-            "anhChanDungUrl", url
+        return ResponseEntity.ok(
+            Map.of(
+                "success", true,
+                "anhChanDungUrl", url
+            )
         );
     }
 

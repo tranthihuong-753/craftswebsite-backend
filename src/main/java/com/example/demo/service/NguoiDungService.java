@@ -114,6 +114,10 @@ public class NguoiDungService {
         // gọi python OCR
         ND_CCCD cccd = cccdService.scanCCCD(imageUrl);
 
+        if (cccd == null) {
+        throw new RuntimeException("Không đọc được CCCD");
+    }
+
         nd.setCccd(cccd);
         nd.setTen(cccd.getHoTen());
 
@@ -131,11 +135,20 @@ public class NguoiDungService {
         return nguoiDungRepository.save(nd);
     }
 
-    public NguoiDung dangKyBangSDT(String sdt) {
+    public Map<String, Object> dangKyBangSDT(String sdt) {
         Optional<NguoiDung> existing = nguoiDungRepository.findBySdt(sdt);
+        
+        Map<String, Object> result = new HashMap<>();
 
         if(existing.isPresent()){
-            return existing.get(); // trả user cũ
+            NguoiDung nd = existing.get();
+
+            String token = jwtService.generateToken(nd);
+
+            result.put("token", token);
+            result.put("user", nd);  
+
+            return result; 
         }
 
         NguoiDung nd = new NguoiDung();
@@ -143,7 +156,14 @@ public class NguoiDungService {
         nd.setSdt(sdt);
         nd.setTrangThaiXacThuc(ND_Trangthaixacthuc.PHONE_VERIFIED);
 
-        return nguoiDungRepository.save(nd);
+        NguoiDung nd_ = nguoiDungRepository.save(nd);
+
+        String token = jwtService.generateToken(nd_);
+        
+        result.put("token", token);
+        result.put("user", nd_);
+
+        return result;
     }
 
     public NguoiDung datMatKhau(UUID userId, String matKhau, String tenDangNhap) {
@@ -199,8 +219,6 @@ public class NguoiDungService {
                 .toList();
 
         Map<String, Object> result = new HashMap<>();
-        // result.put("userId", userId);
-
         String token = jwtService.generateToken(user);
         result.put("token", token);
         result.put("roles", roles);

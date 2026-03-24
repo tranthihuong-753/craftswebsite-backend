@@ -92,25 +92,3 @@ public class SanPhamCoSanController {
         return ResponseEntity.ok(result);
     }
 }
-
-// {
-//   "moTa": "Vòng tay handmade từ gỗ",
-//   "gia": 150000,
-//   "canNang": 0.2,
-//   "chieuDai": 10,
-//   "chieuRong": 5,
-//   "chieuCao": 2,
-//   "giaGoc": 200000,
-//   "soLuongBanDau": 10,
-//   "soLuongHienTai": 10,
-
-//   "trangThaiSPCS": "CON_HANG",
-
-//   "sellerId": "0f1c2a9c-9c41-4a6f-8c7a-1f98f5a12345",
-//   "danhMucId": 3,
-
-//   "trangThaiSanPham": "DANG_BAN",
-//   "soGioLamViecUocTinh": 5,
-
-//   "trangThaiChungChi": "HOAT_DONG"
-// }

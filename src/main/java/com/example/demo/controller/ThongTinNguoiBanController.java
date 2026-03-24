@@ -67,23 +67,39 @@ public class ThongTinNguoiBanController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registerSeller(@RequestBody SellerRegisterRequest req) {
+    public ResponseEntity<?> registerSeller(
+            @RequestBody SellerRegisterRequest req,
+            HttpServletRequest request) {
+
+        System.out.println(req);
+        String userId = (String) request.getAttribute("userId");
+
+        if (userId == null) {
+            return ResponseEntity.status(401).body(
+                    Map.of("error", "Unauthorized")
+            );
+        }
+
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(
+                    Map.of("error", "Token không hợp lệ")
+            );
+        }
 
         try {
-
-            service.registerSeller(req);
+            service.registerSeller(uid, req);
 
             return ResponseEntity.ok(
                     Map.of("message", "Đăng ký người bán thành công")
             );
 
         } catch (RuntimeException e) {
-
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(
-                            "error", e.getMessage()
-                    ));
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

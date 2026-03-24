@@ -83,10 +83,10 @@ public class ThongTinNguoiBanService {
     }
 
     @Transactional
-    public void registerSeller(SellerRegisterRequest req) {
+    public void registerSeller(UUID userId, SellerRegisterRequest req) {
 
         // tìm user
-        NguoiDung nguoiDung = nguoiDungRepository.findById(req.getNguoiDungId())
+        NguoiDung nguoiDung = nguoiDungRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
         // tạo ThongTinNguoiBan
