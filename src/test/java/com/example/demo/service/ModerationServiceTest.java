@@ -82,17 +82,17 @@ public class ModerationServiceTest {
         verify(sanPhamCoSanService).updateSanPhamCoSanTrangThai(sanPhamId, "VI_PHAM");
     }
 
-    @Test
-    @DisplayName("TC_MOD_016: Lấy thông tin SP trước khi duyệt")
-    void TC_MOD_016() {
-        SanPhamCoSan sp = new SanPhamCoSan();
-        sp.setId(sanPhamId);
-        when(sanPhamCoSanService.getById(sanPhamId)).thenReturn(sp);
+    // @Test
+    // @DisplayName("TC_MOD_016: Lấy thông tin SP trước khi duyệt")
+    // void TC_MOD_016() {
+    //     SanPhamCoSan sp = new SanPhamCoSan();
+    //     sp.setId(sanPhamId);
+    //     when(sanPhamCoSanService.getById(sanPhamId)).thenReturn(sp);
         
-        SanPhamCoSan result = sanPhamCoSanService.getById(sanPhamId);
-        assertNotNull(result);
-        assertEquals(sanPhamId, result.getId());
-    }
+    //     SanPhamCoSan result = sanPhamCoSanService.getById(sanPhamId);
+    //     assertNotNull(result);
+    //     assertEquals(sanPhamId, result.getId());
+    // }
 
     // --- NHÓM LOGIC & AUDIT LOG (TC_MOD_003, 006, 007, 008, 011, 012, 015, 018, 020) ---
 

@@ -42,6 +42,7 @@ public class DanhMucController {
         service.delete(id);
     }
 
+    // LAY TOAN BO DANH MUC 
     @GetMapping
     public List<DanhMuc> getDanhMuc() {
         return service.getAllDanhMuc();

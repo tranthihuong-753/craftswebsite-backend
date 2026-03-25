@@ -20,6 +20,8 @@ import com.example.demo.entity.AnhVideo;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.service.NguoiDungService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/nguoi-dung")
 public class NguoiDungController {
@@ -64,39 +66,94 @@ public class NguoiDungController {
     //     return nguoiDungService.taoNguoiDungTuCCCD(imageUrl);
     // }
 
-    // TAo bang sdt 
+    // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     @PostMapping("/create/sdt")
-    public NguoiDung taoBangSDT(@RequestBody Map<String,String> body) {
+    public ResponseEntity<?> taoBangSDT(@RequestBody Map<String,String> body) {
         String sdt = body.get("sdt");
 
-        return nguoiDungService.dangKyBangSDT(sdt);
-    }
+        Map<String, Object> result = nguoiDungService.dangKyBangSDT(sdt);
 
-    // update voi cccd 
-    @PostMapping("/scan-cccd")
-    public NguoiDung scanCCCD(@RequestBody Map<String,String> body) {
+        if(result == null){
+            return ResponseEntity.status(401).body(
+                    Map.of(
+                            "success", false,
+                            "message", "Số điện thoại không hợp lệ."
+                    )
+            );
+        }
 
-        String imageUrl = body.get("imageUrl");
-        String userId = body.get("userId");
-
-        return nguoiDungService.taoNguoiDungTuCCCD(
-                UUID.fromString(userId),
-                imageUrl
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true
+                        ,"token", result.get("token")
+                        // ,"roles", result.get("roles")
+                )
         );
     }
 
+    // UPDATE TAI KHOAN LEVEL 2 - SU DUNG CCCD 
+    @PostMapping("/scan-cccd")
+    public ResponseEntity<?> scanCCCD(
+        @RequestBody Map<String,String> body
+        , HttpServletRequest request
+    ) {
+        String imageUrl = body.get("imageUrl");
+        String userId = (String) request.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Token không hợp lệ");
+        }
+        NguoiDung nd = nguoiDungService.taoNguoiDungTuCCCD(
+            uid,
+            imageUrl
+        );
 
+        return ResponseEntity.ok(
+            Map.of(
+                "ten", nd.getTen(),
+                "cccd", nd.getCccd()
+            )
+        );
+    }
+
+    // UPDATE TAI KHOAN LEVEL 3 - TAO USERNAME PASSWORD 
     @PostMapping("/set-password")
-    public NguoiDung setPassword(@RequestBody Map<String,String> body){
+    public ResponseEntity<?> setPassword(
+        @RequestBody Map<String,String> body
+        , HttpServletRequest request
+    ){
+        String userId = (String) request.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
 
-        String userId = body.get("userId");
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Token không hợp lệ");
+        }
+
+
         String password = body.get("password");
         String tenDangNhap = body.get("tenDangNhap");
         
-        return nguoiDungService.datMatKhau(
-                UUID.fromString(userId),
-                password,
-                tenDangNhap
+        NguoiDung nd = nguoiDungService.datMatKhau(
+            uid,
+            password,
+            tenDangNhap
+        );
+
+        return ResponseEntity.ok(
+            Map.of(
+                "tenDangNhap", nd.getTenDangNhap(),
+                "trangThaiXacThuc", nd.getTrangThaiXacThuc()
+            )
         );
     }
 
@@ -132,41 +189,64 @@ public class NguoiDungController {
         return ResponseEntity.ok(
                 Map.of(
                         "success", true,
-                        "userId", result.get("userId"),
+                        "token", result.get("token"),
                         "roles", result.get("roles")
                 )
         );
     }
         
     // tu id lay anhchandung 
-@GetMapping("/{id}/anh-chan-dung")
-public Map<String,Object> getAnhChanDungById(@PathVariable UUID id) {
+    @GetMapping("/me/anh-chan-dung")
+    public ResponseEntity<?> getMyAnhChanDung(HttpServletRequest request) {
 
-    AnhVideo anh = nguoiDungService.getAnhChanDungById(id);
+        String userId = (String) request.getAttribute("userId");
 
-    String anhChanDungUrl = null;
+        if (userId == null) {
+            return ResponseEntity.status(401).body(
+                Map.of(
+                    "success", false,
+                    "message", "Unauthorized"
+                )
+            );
+        }
 
-    if (anh != null) {
-        anhChanDungUrl = anh.getLink();
-    }
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(
+                Map.of(
+                    "success", false,
+                    "message", "Token không hợp lệ"
+                )
+            );
+        }
 
-    Map<String,Object> res = new HashMap<>();
-    res.put("success", true);
-    res.put("anhChanDungUrl", anhChanDungUrl);
+        AnhVideo anh = nguoiDungService.getAnhChanDungById(uid);
 
-    return res;
-}
-    // tu id lay ten nguoi dung
-    @GetMapping("/{id}/ten")
-    public ResponseEntity<?> getTenById(@PathVariable UUID id) {
-
-        String ten = nguoiDungService.getTenById(id);
+        String url = (anh != null) ? anh.getLink() : null;
 
         return ResponseEntity.ok(
-                Map.of(
-                        "success", true,
-                        "ten", ten
-                )
+            Map.of(
+                "success", true,
+                "anhChanDungUrl", url
+            )
+        );
+    }
+
+    // tu id lay ten nguoi dung
+    @GetMapping("/me/ten")
+    public Map<String,Object> getMyTen(HttpServletRequest request) {
+
+        String userId = (String) request.getAttribute("userId");
+
+        String ten = nguoiDungService.getTenById(
+                UUID.fromString(userId)
+        );
+
+        return Map.of(
+            "success", true,
+            "ten", ten
         );
     }
 

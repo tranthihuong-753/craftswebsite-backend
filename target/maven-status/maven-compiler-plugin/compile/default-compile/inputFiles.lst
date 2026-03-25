@@ -7,6 +7,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\DanhMu
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\DiaChiController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\LoaiSanPhamController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\NguoiDungController.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\NhatKyKiemToanController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\OtpController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\SanPhamController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\SanPhamCoSanController.java
@@ -17,6 +18,8 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTro
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroNguoiDungController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\DemoApplication.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamCoSanRequest.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationDTO.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationProjection.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ScanCCCDRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SellerProductDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SellerRegisterRequest.java
@@ -28,6 +31,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\DanhMuc.ja
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\DiaChi.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\LoaiSanPham.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\NguoiDung.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\NhatKyKiemToan.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\Otp.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\SanPham.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\SanPhamCoSan.java
@@ -41,6 +45,10 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\LoaiChungCh
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\LoaiMucTieuChungChi.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\LoaiSP.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\ND_Trangthaixacthuc.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\NKKT_HanhDong.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\NKKT_KetQua.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\NKKT_LoaiMucTieu.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\NKKT_LoaiTacNhan.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\PhuongThucHttp.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiChungChi.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiDanhMuc.java
@@ -50,6 +58,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiSa
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiTaiKhoanNganHang.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiVaiTro.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TTNB_TrangThai.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\filter\JwtFilter.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\model\ND_CCCD.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\AnhVideoRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\AnhVideoSanPhamRepository.java
@@ -59,6 +68,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\DanhMu
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\DiaChiRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\LoaiSanPhamRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\NguoiDungRepository.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\NhatKyKiemToanRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\OtpRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\SanPhamCoSanRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\SanPhamDatLamRepository.java
@@ -74,8 +84,11 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\CCCDServi
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\ChungChiService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DanhMucService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DiaChiService.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\GenSecret.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\JwtService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\LoaiSanPhamService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\NguoiDungService.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\NhatKyKiemToanService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\OtpService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\SanPhamCoSanService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\SanPhamService.java

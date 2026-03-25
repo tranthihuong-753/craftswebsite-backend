@@ -72,36 +72,33 @@ public class SanPhamCoSanService {
 
     @Autowired
     private NhatKyKiemToanRepository nhatKyKiemToanRepository;
+
+    @Autowired 
+    private ThongTinNguoiBanService thongTinNguoiBanService;
     
     
+    // TAO SAN PHAM CO SAN 
     // Tạo mới sản phẩm có sẵn
     // loaisanpham duoc admind cap nhat
     // danhmucsanpham duoc admind cap nhat
+    @Transactional
     public SanPhamCoSan createSanPhamCoSan(
-            String moTa,
-            BigDecimal gia,
-            Double canNang,
-            Double chieuDai,
-            Double chieuRong,
-            Double chieuCao,
-            BigDecimal giaGoc,
-            Long soLuongBanDau,
-            Long soLuongHienTai,
-            TrangThaiSanPhamCoSan trangThaiSPCS,
-            UUID sellerId,
-            Long danhMucId,
-            TrangThaiSanPham trangThaiSanPham,
-            Long soGioLamViecUocTinh,
-            TrangThaiChungChi trangThaiChungChi,
-            List<String> mediaLinks
+            SanPhamCoSanRequest request,
+            UUID userId
     ) {
-        // lấy người bán
+        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
+
+        if (sellerId == null) {
+            throw new RuntimeException("Bạn chưa có tài khoản người bán");
+        }
+
         ThongTinNguoiBan thongTinNguoiBan = thongTinNguoiBanRepository
-                .findById(sellerId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin người bán"));
+            .findById(sellerId)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy người bán"));
+
         // 2 lấy danh mục do seller chọn
         DanhMuc danhMuc = danhMucRepository
-                .findById(danhMucId)
+                .findById(request.getDanhMucId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục"));
 
         // 3 tạo chứng chỉ cho sản phẩm
@@ -110,22 +107,22 @@ public class SanPhamCoSanService {
         chungChi.setLoaiMucTieu(LoaiMucTieuChungChi.SAN_PHAM);
         chungChi.setDiemTrungBinh(0f);
         chungChi.setTongDanhGia(0L);
-        chungChi.setTrangThai(trangThaiChungChi);
+        chungChi.setTrangThai(request.getTrangThaiChungChi());
         chungChi = chungChiRepository.save(chungChi);        
 
         // tạo sản phẩm
         SanPham sanPham = new SanPham();
         sanPham.setThongTinNguoiBan(thongTinNguoiBan);
         sanPham.setDanhMuc(danhMuc);
-        sanPham.setTrangThai(trangThaiSanPham);
-        sanPham.setSoGioLamViecUocTinh(soGioLamViecUocTinh);
+        sanPham.setTrangThai(request.getTrangThaiSanPham());
+        sanPham.setSoGioLamViecUocTinh(request.getSoGioLamViecUocTinh());
         sanPham.setChungChi(chungChi);
         sanPham = sanPhamRepository.save(sanPham);
 
         // lưu ảnh và video
-        if (mediaLinks != null && !mediaLinks.isEmpty()) {
+        if (request.getMediaLinks() != null && !request.getMediaLinks().isEmpty()) {
             long order = 1;
-            for (String link : mediaLinks) {
+            for (String link : request.getMediaLinks()) {
 
                 AnhVideoSanPham media = new AnhVideoSanPham();
                 media.setSanPham(sanPham);
@@ -142,73 +139,20 @@ public class SanPhamCoSanService {
 
         // tạo sản phẩm có sẵn
         SanPhamCoSan sanPhamCoSan = new SanPhamCoSan();
-        sanPhamCoSan.setMoTa(moTa);
-        sanPhamCoSan.setGia(gia);
-        sanPhamCoSan.setCanNang(canNang);
-        sanPhamCoSan.setChieuDai(chieuDai);
-        sanPhamCoSan.setChieuRong(chieuRong);
-        sanPhamCoSan.setChieuCao(chieuCao);
-        sanPhamCoSan.setGiaGoc(giaGoc);
-        sanPhamCoSan.setSoLuongBanDau(soLuongBanDau);
-        sanPhamCoSan.setSoLuongHienTai(soLuongHienTai);
-        sanPhamCoSan.setTrangThai(trangThaiSPCS);
+        sanPhamCoSan.setMoTa(request.getMoTa());
+        sanPhamCoSan.setGia(request.getGia());
+        sanPhamCoSan.setCanNang(request.getCanNang());
+        sanPhamCoSan.setChieuDai(request.getChieuDai());
+        sanPhamCoSan.setChieuRong(request.getChieuRong());
+        sanPhamCoSan.setChieuCao(request.getChieuCao());
+        sanPhamCoSan.setGiaGoc(request.getGiaGoc());
+        sanPhamCoSan.setSoLuongBanDau(request.getSoLuongBanDau());
+        sanPhamCoSan.setSoLuongHienTai(request.getSoLuongHienTai());
+        sanPhamCoSan.setTrangThai(request.getTrangThaiSPCS());
         sanPhamCoSan.setSanPham(sanPham);
 
         return sanPhamCoSanRepository.save(sanPhamCoSan);
     }
-
-    // public Page<SellerProductDTO> getProducts(String status,Pageable pageable) {
-
-    //     TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
-    //     Page<SanPhamCoSan> page = sanPhamCoSanRepository.findBySanPhamTrangThai(trangThai, pageable);
-
-    //     return new PageImpl<>(
-    //         page.getContent().stream().map(spcs -> {
-
-    //             SellerProductDTO dto = new SellerProductDTO();
-
-    //             dto.setId(spcs.getId());
-
-    //             dto.setGia(spcs.getGia());
-
-    //             dto.setMoTa(spcs.getMoTa());
-
-    //             dto.setSoLuongBanDau(spcs.getSoLuongBanDau());
-
-    //             if (spcs.getSanPham().getLoaiSanPham() != null) {
-    //                 dto.setLoaiSanPham(
-    //                     spcs.getSanPham()
-    //                         .getLoaiSanPham()
-    //                         .getLoai()
-    //                 );
-    //             } else {
-    //                 dto.setLoaiSanPham(null);
-    //             }
-
-    //             dto.setChungChiId(
-    //                     spcs.getSanPham()
-    //                             .getChungChi()
-    //                             .getId()
-    //             );
-
-    //             Long spId = spcs.getSanPham().getId();
-
-    //             AnhVideoSanPham av =
-    //                     anhVideoSanPhamRepository
-    //                             .findFirstBySanPhamIdOrderByThuTuAsc(spId)
-    //                             .orElse(null);
-
-    //             if (av != null) {
-    //                 dto.setImage(av.getLink());
-    //             }
-
-    //             return dto;
-
-    //         }).collect(Collectors.toList()),
-    //         pageable,
-    //         page.getTotalElements()
-    //     );
-    // }
 
     public Page<SellerProductDTO> getProducts(
         UUID sellerId,
@@ -272,25 +216,70 @@ public class SanPhamCoSanService {
         );
     }
 
-    public SanPhamCoSan getById(Long id) {
-
-        return sanPhamCoSanRepository
+    // LAY SAN PHAM BANG Id 
+    public SanPhamCoSan getById(Long id, UUID userId){
+        SanPhamCoSan spcs = sanPhamCoSanRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+        
+        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
+
+        if (sellerId == null) {
+            throw new RuntimeException("Bạn chưa có tài khoản người bán");
+        }
+
+        if (!spcs.getSanPham()
+            .getThongTinNguoiBan()
+            .getId()
+            .equals(sellerId)) {
+
+            throw new RuntimeException("Không có quyền truy cập sản phẩm này");
+        }
+
+        return spcs;
+
     }
+
+    // UPDATE SAN PHAM BANG Id SAN PHAM
     // updateSanPhamCoSan(id, request)
     @Transactional
     public SanPhamCoSan updateSanPhamCoSan(
             Long id,
-            SanPhamCoSanRequest request
+            SanPhamCoSanRequest request,
+            UUID userId
     ) {
+
+        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
+
+        if (sellerId == null) {
+            throw new RuntimeException("Bạn không phải người bán");
+        }
 
         // 1 tìm sản phẩm có sẵn
         SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
-        // 2 update thông tin SPCS
+        // CHECK CHỦ SẢN PHẨM (CỰC QUAN TRỌNG)
+        UUID ownerSellerId = sanPhamCoSan
+                .getSanPham()
+                .getThongTinNguoiBan()
+                .getId();
+
+        if (!ownerSellerId.equals(sellerId)) {
+            throw new RuntimeException("Bạn không có quyền sửa sản phẩm này");
+        }
+
+        // Validate  (chống hack)
+        if (request.getGia().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Giá phải > 0");
+        }
+
+        if (request.getSoLuongBanDau() <= 0) {
+            throw new RuntimeException("Số lượng phải > 0");
+        }
+
+        // update thông tin SPCS
         sanPhamCoSan.setMoTa(request.getMoTa());
         sanPhamCoSan.setGia(request.getGia());
         sanPhamCoSan.setGiaGoc(request.getGiaGoc());
@@ -305,13 +294,13 @@ public class SanPhamCoSanService {
 
         sanPhamCoSan.setTrangThai(request.getTrangThaiSPCS());
 
-        // 3 update sản phẩm gốc
+        // update sản phẩm gốc
         SanPham sanPham = sanPhamCoSan.getSanPham();
 
         sanPham.setTrangThai(request.getTrangThaiSanPham());
         sanPham.setSoGioLamViecUocTinh(request.getSoGioLamViecUocTinh());
 
-        // 4 update danh mục nếu có thay đổi
+        // update danh mục nếu có thay đổi
         if (request.getDanhMucId() != null) {
 
             DanhMuc danhMuc = danhMucRepository
@@ -321,7 +310,9 @@ public class SanPhamCoSanService {
             sanPham.setDanhMuc(danhMuc);
         }
 
-        // 5 update media
+        sanPhamRepository.save(sanPham);
+        
+        // update media
         if (request.getMediaLinks() != null) {
 
             // xóa media cũ
@@ -363,114 +354,35 @@ public class SanPhamCoSanService {
 
         return sanPhamCoSanRepository.save(sanPhamCoSan);
     } 
-    
-    // public Page<SanPhamModerationDTO> getModerationProducts(
-    //         String status,
-    //         String search,
-    //         int page,
-    //         int size,
-    //         String sort
-    // ) {
 
-    //     TrangThaiSanPham trangThai = TrangThaiSanPham.valueOf(status);
+    // XOA SAN PHAM BANG Id SAN PHAM
+    @Transactional
+    public void deleteSanPham(Long id, UUID userId) {
 
-    //     Sort sortObj = sort.equalsIgnoreCase("asc")
-    //             ? Sort.by("sanPham.ngayTao").ascending()
-    //             : Sort.by("sanPham.ngayTao").descending();
+        SanPhamCoSan spcs = sanPhamCoSanRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
-    //     Pageable pageable = PageRequest.of(page, size, sortObj);
+        // 🔥 Lấy sellerId từ user
+        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
 
-    //     Page<SanPhamCoSan> pageResult;
+        if (sellerId == null) {
+            throw new RuntimeException("Bạn chưa có tài khoản người bán");
+        }
 
-    //     if (search != null && !search.isEmpty()) {
-    //         pageResult = sanPhamCoSanRepository
-    //                 .findBySanPhamTrangThaiAndTimKiemContaining(trangThai, search, pageable);
-    //     } else {
-    //         pageResult = sanPhamCoSanRepository
-    //                 .findBySanPhamTrangThai(trangThai, pageable);
-    //     }
+        // 🔥 Check sản phẩm có thuộc seller này không
+        if (!spcs.getSanPham().getThongTinNguoiBan().getId().equals(sellerId)) {
+            throw new RuntimeException("Không có quyền xóa sản phẩm này");
+        }
 
-    //     return new PageImpl<>(
-    //         pageResult.getContent().stream().map(spcs -> {
+        // ✔ Soft delete
+        TrangThaiSanPhamCoSan tt = TrangThaiSanPhamCoSan.DA_XOA;
+        spcs.setTrangThai(tt);
 
-    //             SanPhamModerationDTO dto = new SanPhamModerationDTO(
-    //                     spcs.getId(),
-    //                     null,
-    //                     spcs.getSanPham()
-    //                             .getThongTinNguoiBan()
-    //                             .getNguoiDung()
-    //                             .getTen(),
-    //                     spcs.getSanPham().getNgayTao()
-    //             );
-
-    //             Long spId = spcs.getSanPham().getId();
-
-    //             // ảnh
-    //             AnhVideoSanPham av =
-    //                     anhVideoSanPhamRepository
-    //                             .findFirstBySanPhamIdOrderByThuTuAsc(spcs.getSanPham().getId())
-    //                             .orElse(null);
-
-    //             if (av != null) {
-    //                 dto.setAnhSanPham(av.getLink());
-    //             }
-
-    //             // 🔥 LẤY LOG THEO STATUS
-    //             // ==============================
-
-    //             Optional<NhatKyKiemToan> logOpt = Optional.empty();
-
-    //             if (trangThai == TrangThaiSanPham.DANG_BAN) {
-
-    //                 // 👉 sản phẩm đã DUYỆT
-    //                 logOpt = nhatKyKiemToanRepository
-    //                         .findTopByIdMucTieuAndLoaiMucTieuAndHanhDongOrderByNgayTaoDesc(
-    //                                 spId,
-    //                                 NKKT_LoaiMucTieu.SAN_PHAM,
-    //                                 NKKT_HanhDong.TAO_SAN_PHAM
-    //                         );
-
-    //             } else if (trangThai == TrangThaiSanPham.VI_PHAM) {
-
-    //                 // 👉 sản phẩm VI PHẠM
-    //                 logOpt = nhatKyKiemToanRepository
-    //                         .findTopByIdMucTieuAndLoaiMucTieuAndHanhDongOrderByNgayTaoDesc(
-    //                                 spId,
-    //                                 NKKT_LoaiMucTieu.SAN_PHAM,
-    //                                 NKKT_HanhDong.XOA_SAN_PHAM
-    //                         );
-    //             }
-
-    //             // ==============================
-    //             // 🔥 MAP LOG → DTO
-    //             // ==============================
-
-    //             logOpt.ifPresent(log -> {
-
-    //                 dto.setNgayXuLy(log.getNgayTao());
-    //                 dto.setAdminId(log.getIdTacNhan());
-
-    //                 try {
-    //                     ObjectMapper mapper = new ObjectMapper();
-    //                     Map<String, Object> map = mapper.readValue(
-    //                             log.getSieuDuLieu(),
-    //                             Map.class
-    //                     );
-
-    //                     dto.setLyDo((String) map.get("ly_do"));
-
-    //                 } catch (Exception e) {
-    //                     dto.setLyDo("-");
-    //                 }
-    //             });
-
-    //             return dto;
-
-    //         }).toList(),
-    //         pageable,
-    //         pageResult.getTotalElements()
-    //     );
-    // }
+        SanPham sp = spcs.getSanPham();
+        if (sp != null) {
+            sp.setTrangThai(TrangThaiSanPham.DA_XOA);
+        }
+    }
 
     public Page<SanPhamModerationDTO> getModerationProducts(
             String status,
@@ -531,7 +443,7 @@ public class SanPhamCoSanService {
         );
     }
 
-        @Transactional
+    @Transactional
     public SanPhamCoSan updateSanPhamCoSanTrangThai(Long id) {
 
         SanPhamCoSan sanPhamCoSan = sanPhamCoSanRepository

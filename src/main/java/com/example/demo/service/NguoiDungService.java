@@ -34,6 +34,9 @@ public class NguoiDungService {
 
     @Autowired
     private VaiTroNguoiDungRepository vtndRepository;
+
+    @Autowired
+    private JwtService jwtService;
     
     // CREATE
     public NguoiDung createNguoiDung(NguoiDung nguoiDung) {
@@ -103,6 +106,7 @@ public class NguoiDungService {
     //     return nd;
     // }
 
+    // UPDATE TAI KHOAN LEVEL 2 - SU DUNG CCCD 
     public NguoiDung taoNguoiDungTuCCCD(UUID userId, String imageUrl) {
 
         NguoiDung nd = nguoiDungRepository.findById(userId)
@@ -110,6 +114,10 @@ public class NguoiDungService {
 
         // gọi python OCR
         ND_CCCD cccd = cccdService.scanCCCD(imageUrl);
+
+        if (cccd == null) {
+        throw new RuntimeException("Không đọc được CCCD");
+    }
 
         nd.setCccd(cccd);
         nd.setTen(cccd.getHoTen());
@@ -128,21 +136,39 @@ public class NguoiDungService {
         return nguoiDungRepository.save(nd);
     }
 
-    public NguoiDung dangKyBangSDT(String sdt) {
+    // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
+    public Map<String, Object> dangKyBangSDT(String sdt) {
         Optional<NguoiDung> existing = nguoiDungRepository.findBySdt(sdt);
+        
+        Map<String, Object> result = new HashMap<>();
 
-        if(existing.isPresent()){
-            return existing.get(); // trả user cũ
-        }
+        // if(existing.isPresent()){
+        //     NguoiDung nd = existing.get();
+
+        //     String token = jwtService.generateToken(nd);
+
+        //     result.put("token", token);
+        //     result.put("user", nd);  
+
+        //     return result; 
+        // }
 
         NguoiDung nd = new NguoiDung();
 
         nd.setSdt(sdt);
         nd.setTrangThaiXacThuc(ND_Trangthaixacthuc.PHONE_VERIFIED);
 
-        return nguoiDungRepository.save(nd);
+        NguoiDung nd_ = nguoiDungRepository.save(nd);
+
+        String token = jwtService.generateToken(nd_);
+        
+        result.put("token", token);
+        result.put("user", nd_);
+
+        return result;
     }
 
+    // UPDATE TAI KHOAN LEVEL 3 - TAO USERNAME PASSWORD 
     public NguoiDung datMatKhau(UUID userId, String matKhau, String tenDangNhap) {
         if (matKhau == null || matKhau.length() < 8) {
             throw new RuntimeException("Mật khẩu phải từ 8 ký tự trở lên");
@@ -173,17 +199,6 @@ public class NguoiDungService {
         return nguoiDungRepository.findAllTenDangNhap();
     }
 
-    // public boolean login(String username, String password) {
-
-    //     Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhap(username);
-
-    //     if(userOpt.isEmpty()) return false;
-
-    //     NguoiDung user = userOpt.get();
-
-    //     return user.getMatKhau().equals(password);
-    // }
-
     public Map<String, Object> login(String username, String password) {
 
         Optional<NguoiDung> userOpt =
@@ -207,7 +222,8 @@ public class NguoiDungService {
                 .toList();
 
         Map<String, Object> result = new HashMap<>();
-        result.put("userId", userId);
+        String token = jwtService.generateToken(user);
+        result.put("token", token);
         result.put("roles", roles);
 
         return result;
@@ -231,7 +247,7 @@ public class NguoiDungService {
         return tenOpt.get();
     }
 
-        public UUID loginAndGetUserId(String username, String password) {
+    public UUID loginAndGetUserId(String username, String password) {
 
         Optional<NguoiDung> userOpt = nguoiDungRepository.findByTenDangNhapAndMatKhau(username, password);
 

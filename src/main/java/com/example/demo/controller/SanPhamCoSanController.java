@@ -7,10 +7,14 @@ import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.enums.TrangThaiSanPham;
 import com.example.demo.enums.TrangThaiSanPhamCoSan;
 import com.example.demo.service.SanPhamCoSanService;
+import com.example.demo.service.ThongTinNguoiBanService;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
@@ -23,61 +27,116 @@ import org.springframework.http.ResponseEntity;
 @RequiredArgsConstructor
 public class SanPhamCoSanController {
 
-    private final SanPhamCoSanService sanPhamCoSanService;
+    @Autowired
+    private SanPhamCoSanService sanPhamCoSanService;
 
+    @Autowired
+    private ThongTinNguoiBanService thongTinNguoiBanService;
+
+    // TAO SAN PHAM CO SAN 
     @PostMapping
-    public SanPhamCoSan create(@RequestBody SanPhamCoSanRequest request) {
+    public ResponseEntity<?> create(
+            @RequestBody SanPhamCoSanRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        String userIdStr = (String) httpRequest.getAttribute("userId");
 
-        return sanPhamCoSanService.createSanPhamCoSan(
-                request.getMoTa(),
-                request.getGia(),
-                request.getCanNang(),
-                request.getChieuDai(),
-                request.getChieuRong(),
-                request.getChieuCao(),
-                request.getGiaGoc(),
-                request.getSoLuongBanDau(),
-                request.getSoLuongHienTai(),
-                request.getTrangThaiSPCS(),
-                request.getSellerId(),
-                request.getDanhMucId(),
-                request.getTrangThaiSanPham(),
-                request.getSoGioLamViecUocTinh(),
-                request.getTrangThaiChungChi(),
-                request.getMediaLinks()
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        SanPhamCoSan result = sanPhamCoSanService.createSanPhamCoSan(
+                request,
+                userId
         );
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
     public Page<SellerProductDTO> getProducts(
-            @RequestParam UUID sellerId,
             @RequestParam String status,
             @RequestParam(required = false) String search,
-            Pageable pageable
+            Pageable pageable,
+            HttpServletRequest request
     ) {
+        String userIdStr = (String) request.getAttribute("userId");
+
+        if (userIdStr == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
+
+        if (sellerId == null) {
+            throw new RuntimeException("Chưa có tài khoản người bán");
+        }
+
         return sanPhamCoSanService.getProducts(sellerId, status, search, pageable);
     }
 
+    // LAY SAN PHAM BANG Id 
     @GetMapping("/{id}")
-    public SanPhamCoSan getById(@PathVariable Long id) {
-
-        return sanPhamCoSanService.getById(id);
-    }
-
-    @PutMapping("/{id}")
-    public SanPhamCoSan update(
-            @PathVariable Long id,
-            @RequestBody SanPhamCoSanRequest request
+    public ResponseEntity<?> getById(
+        @PathVariable Long id
+        , HttpServletRequest request
     ) {
-        return sanPhamCoSanService.updateSanPhamCoSan(id, request);
-    }
-    
-    @PutMapping("/{id}/delete")
-    public ResponseEntity<?> deleteSanPham(@PathVariable Long id) {
 
-        SanPhamCoSan result = sanPhamCoSanService.updateSanPhamCoSanTrangThai(id, "DA_XOA");
+        String userIdStr = (String) request.getAttribute("userId");
+
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        SanPhamCoSan result = sanPhamCoSanService.getById(id, userId);
 
         return ResponseEntity.ok(result);
+
+    }
+
+    // UPDATE SAN PHAM BANG Id SAN PHAM
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(
+            @PathVariable Long id,
+            @RequestBody SanPhamCoSanRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        String userIdStr = (String) httpRequest.getAttribute("userId");
+
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        SanPhamCoSan result = sanPhamCoSanService.updateSanPhamCoSan(id, request, userId);
+
+        return ResponseEntity.ok(result);
+    }
+    
+    // XOA SAN PHAM BANG Id SAN PHAM
+    @PutMapping("/{id}/delete")
+    public ResponseEntity<?> deleteSanPham(
+        @PathVariable Long id
+        , HttpServletRequest request
+    ) {
+        String userIdStr = (String) request.getAttribute("userId");
+
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        sanPhamCoSanService.deleteSanPham(id, userId);
+
+        return ResponseEntity.ok("Đã xóa");
     }
 
     @GetMapping("/moderation-products")
@@ -92,25 +151,3 @@ public class SanPhamCoSanController {
         return ResponseEntity.ok(result);
     }
 }
-
-// {
-//   "moTa": "Vòng tay handmade từ gỗ",
-//   "gia": 150000,
-//   "canNang": 0.2,
-//   "chieuDai": 10,
-//   "chieuRong": 5,
-//   "chieuCao": 2,
-//   "giaGoc": 200000,
-//   "soLuongBanDau": 10,
-//   "soLuongHienTai": 10,
-
-//   "trangThaiSPCS": "CON_HANG",
-
-//   "sellerId": "0f1c2a9c-9c41-4a6f-8c7a-1f98f5a12345",
-//   "danhMucId": 3,
-
-//   "trangThaiSanPham": "DANG_BAN",
-//   "soGioLamViecUocTinh": 5,
-
-//   "trangThaiChungChi": "HOAT_DONG"
-// }

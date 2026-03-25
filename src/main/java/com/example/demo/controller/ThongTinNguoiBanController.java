@@ -6,7 +6,10 @@ import com.example.demo.entity.ThongTinNguoiBan;
 import com.example.demo.repository.NguoiDungRepository;
 import com.example.demo.repository.TaiKhoanNganHangRepository;
 import com.example.demo.repository.ThongTinNguoiBanRepository;
+import com.example.demo.service.JwtService;
 import com.example.demo.service.ThongTinNguoiBanService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ public class ThongTinNguoiBanController {
 
     @Autowired
     private ThongTinNguoiBanService service;
+
+    @Autowired
+    private JwtService jwtService;
 
     // @PostMapping
     // public ThongTinNguoiBan createThongTinNguoiBan(@RequestBody ThongTinNguoiBan data) {
@@ -60,31 +66,52 @@ public class ThongTinNguoiBanController {
         return ResponseEntity.ok(exists);
     }
 
+    // TAO TAI KHOAN NGUOI BAN
     @PostMapping
-    public ResponseEntity<?> registerSeller(@RequestBody SellerRegisterRequest req) {
+    public ResponseEntity<?> registerSeller(
+            @RequestBody SellerRegisterRequest req,
+            HttpServletRequest request) {
+
+        System.out.println(req);
+        String userId = (String) request.getAttribute("userId");
+
+        if (userId == null) {
+            return ResponseEntity.status(401).body(
+                    Map.of("error", "Unauthorized")
+            );
+        }
+
+        UUID uid;
+        try {
+            uid = UUID.fromString(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(
+                    Map.of("error", "Token không hợp lệ")
+            );
+        }
 
         try {
-
-            service.registerSeller(req);
+            service.registerSeller(uid, req);
 
             return ResponseEntity.ok(
                     Map.of("message", "Đăng ký người bán thành công")
             );
 
         } catch (RuntimeException e) {
-
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(
-                            "error", e.getMessage()
-                    ));
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
-    @GetMapping("/by-user/{userId}")
-    public ResponseEntity<UUID> getSellerId(@PathVariable UUID userId) {
+    @GetMapping("/me")
+    public ResponseEntity<UUID> getMySellerId(HttpServletRequest request) {
 
-        UUID sellerId = service.getSellerIdByUserId(userId);
+        String userId = (String) request.getAttribute("userId");
+
+        UUID sellerId = service.getSellerIdByUserId(
+                UUID.fromString(userId)
+        );
 
         if (sellerId == null) {
             return ResponseEntity.notFound().build();
