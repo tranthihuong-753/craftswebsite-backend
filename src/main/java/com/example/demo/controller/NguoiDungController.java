@@ -57,15 +57,6 @@ public class NguoiDungController {
         nguoiDungService.deleteNguoiDung(id);
     }
 
-    // GET BY CCCD
-    // @PostMapping("/scan-cccd")
-    // public NguoiDung scanCCCD(@RequestBody Map<String,String> body) {
-    //     System.out.println("scanCCCD");
-    //     String imageUrl = body.get("imageUrl");
-
-    //     return nguoiDungService.taoNguoiDungTuCCCD(imageUrl);
-    // }
-
     // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     @PostMapping("/create/sdt")
     public ResponseEntity<?> taoBangSDT(@RequestBody Map<String,String> body) {
@@ -162,13 +153,6 @@ public class NguoiDungController {
         return nguoiDungService.getAllTenDangNhap();
     }
 
-    // @PostMapping("/login")
-    // public boolean login(@RequestBody Map<String,String> body) {
-    //     String username = body.get("username");
-    //     String password = body.get("password");
-    //     return nguoiDungService.login(username, password);
-    // }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String,String> body) {
 
@@ -195,9 +179,11 @@ public class NguoiDungController {
         );
     }
         
-    // tu id lay anhchandung 
+    // TU ID LAY ANH CHAN DUNG 
     @GetMapping("/me/anh-chan-dung")
-    public ResponseEntity<?> getMyAnhChanDung(HttpServletRequest request) {
+    public ResponseEntity<?> getMyAnhChanDung(
+        HttpServletRequest request
+    ) {
 
         String userId = (String) request.getAttribute("userId");
 
@@ -240,7 +226,7 @@ public class NguoiDungController {
 
         String userId = (String) request.getAttribute("userId");
 
-        String ten = nguoiDungService.getTenById(
+        String ten = nguoiDungService.getTenDangNhapById(
                 UUID.fromString(userId)
         );
 
