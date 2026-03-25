@@ -236,9 +236,9 @@ public class NguoiDungService {
     }
 
     // tu id lay ten nguoi dung
-    public String getTenById(UUID id) {
+    public String getTenDangNhapById(UUID id) {
 
-        Optional<String> tenOpt = nguoiDungRepository.findTenById(id);
+        Optional<String> tenOpt = nguoiDungRepository.findTenDangNhapById(id);
 
         if (tenOpt.isEmpty() || tenOpt.get() == null || tenOpt.get().isBlank()) {
             return "Admin";
