@@ -82,6 +82,7 @@ public class ThongTinNguoiBanService {
         return false;
     }
 
+    // TAO TAI KHOAN NGUOI BAN
     @Transactional
     public void registerSeller(UUID userId, SellerRegisterRequest req) {
 

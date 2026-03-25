@@ -66,7 +66,7 @@ public class NguoiDungController {
     //     return nguoiDungService.taoNguoiDungTuCCCD(imageUrl);
     // }
 
-    // TAo bang sdt 
+    // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     @PostMapping("/create/sdt")
     public ResponseEntity<?> taoBangSDT(@RequestBody Map<String,String> body) {
         String sdt = body.get("sdt");
@@ -91,7 +91,7 @@ public class NguoiDungController {
         );
     }
 
-    // update voi cccd 
+    // UPDATE TAI KHOAN LEVEL 2 - SU DUNG CCCD 
     @PostMapping("/scan-cccd")
     public ResponseEntity<?> scanCCCD(
         @RequestBody Map<String,String> body
@@ -121,6 +121,7 @@ public class NguoiDungController {
         );
     }
 
+    // UPDATE TAI KHOAN LEVEL 3 - TAO USERNAME PASSWORD 
     @PostMapping("/set-password")
     public ResponseEntity<?> setPassword(
         @RequestBody Map<String,String> body

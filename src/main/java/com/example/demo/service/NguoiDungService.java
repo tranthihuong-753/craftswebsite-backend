@@ -106,6 +106,7 @@ public class NguoiDungService {
     //     return nd;
     // }
 
+    // UPDATE TAI KHOAN LEVEL 2 - SU DUNG CCCD 
     public NguoiDung taoNguoiDungTuCCCD(UUID userId, String imageUrl) {
 
         NguoiDung nd = nguoiDungRepository.findById(userId)
@@ -135,21 +136,22 @@ public class NguoiDungService {
         return nguoiDungRepository.save(nd);
     }
 
+    // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     public Map<String, Object> dangKyBangSDT(String sdt) {
         Optional<NguoiDung> existing = nguoiDungRepository.findBySdt(sdt);
         
         Map<String, Object> result = new HashMap<>();
 
-        if(existing.isPresent()){
-            NguoiDung nd = existing.get();
+        // if(existing.isPresent()){
+        //     NguoiDung nd = existing.get();
 
-            String token = jwtService.generateToken(nd);
+        //     String token = jwtService.generateToken(nd);
 
-            result.put("token", token);
-            result.put("user", nd);  
+        //     result.put("token", token);
+        //     result.put("user", nd);  
 
-            return result; 
-        }
+        //     return result; 
+        // }
 
         NguoiDung nd = new NguoiDung();
 
@@ -166,6 +168,7 @@ public class NguoiDungService {
         return result;
     }
 
+    // UPDATE TAI KHOAN LEVEL 3 - TAO USERNAME PASSWORD 
     public NguoiDung datMatKhau(UUID userId, String matKhau, String tenDangNhap) {
         if (matKhau == null || matKhau.length() < 8) {
             throw new RuntimeException("Mật khẩu phải từ 8 ký tự trở lên");

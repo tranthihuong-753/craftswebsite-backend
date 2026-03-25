@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.dto.SanPhamModerationDTO;
 import com.example.demo.entity.SanPham;
 import com.example.demo.service.SanPhamService;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +49,13 @@ public class SanPhamController {
         service.delete(id);
     }
 
-    @GetMapping("/{ttnbId}/dang-ban/count")
-    public long demSanPhamDangBan(@PathVariable UUID ttnbId) {
-        return service.demSanPhamDangBan(ttnbId);
+    @GetMapping("/dang-ban/count")
+    public long demSanPhamDangBan(HttpServletRequest request) {
+
+        String userIdStr = (String) request.getAttribute("userId");
+        UUID userId = UUID.fromString(userIdStr);
+
+        return service.demSanPhamDangBanByUserId(userId);
     }
 
 }

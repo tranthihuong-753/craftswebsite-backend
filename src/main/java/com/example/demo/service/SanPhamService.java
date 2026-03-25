@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,7 +22,11 @@ import org.springframework.data.domain.Sort;
 @RequiredArgsConstructor
 public class SanPhamService {
 
-    private final SanPhamRepository repository;
+    @Autowired
+    private SanPhamRepository repository;
+
+    @Autowired
+    private ThongTinNguoiBanService thongTinNguoiBanService;
 
     public List<SanPham> getAll() {
         return repository.findAll();
@@ -57,13 +61,18 @@ public class SanPhamService {
     }
 
     @Transactional
-    public long demSanPhamDangBan(UUID ttNguoiBanId) {
+    public long demSanPhamDangBanByUserId(UUID userId) {
+
+        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
+
+        if (sellerId == null) {
+            throw new RuntimeException("Bạn chưa là người bán");
+        }
 
         return repository.countByThongTinNguoiBan_IdAndTrangThai(
-                ttNguoiBanId,
+                sellerId,
                 TrangThaiSanPham.DANG_BAN
         );
-
     }
 
 }

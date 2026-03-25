@@ -66,6 +66,7 @@ public class ThongTinNguoiBanController {
         return ResponseEntity.ok(exists);
     }
 
+    // TAO TAI KHOAN NGUOI BAN
     @PostMapping
     public ResponseEntity<?> registerSeller(
             @RequestBody SellerRegisterRequest req,
