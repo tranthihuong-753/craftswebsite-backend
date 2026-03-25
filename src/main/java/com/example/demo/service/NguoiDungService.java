@@ -138,7 +138,7 @@ public class NguoiDungService {
 
     // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     public Map<String, Object> dangKyBangSDT(String sdt) {
-        Optional<NguoiDung> existing = nguoiDungRepository.findBySdt(sdt);
+        // Optional<NguoiDung> existing = nguoiDungRepository.findBySdt(sdt);
         
         Map<String, Object> result = new HashMap<>();
 

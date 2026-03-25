@@ -77,7 +77,6 @@ public class NguoiDungController {
                 Map.of(
                         "success", true
                         ,"token", result.get("token")
-                        // ,"roles", result.get("roles")
                 )
         );
     }
