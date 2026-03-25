@@ -63,4 +63,9 @@ public class NhatKyKiemToan {
 
     @Column(name = "NKKT_NgayTao")
     private LocalDateTime ngayTao;
+
+    @PrePersist
+    public void prePersist() {
+        this.ngayTao = LocalDateTime.now();
+    }
 }

@@ -13,6 +13,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -48,5 +50,10 @@ public class TaiKhoanNganHang {
 
     @Column(name = "TKNH_NgayTao")
     private LocalDateTime ngayTao;
+
+    @PrePersist
+    public void prePersist() {
+        this.ngayTao = LocalDateTime.now();
+    }
 
 }

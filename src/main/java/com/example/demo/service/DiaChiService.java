@@ -33,9 +33,9 @@ public class DiaChiService {
         DiaChi diaChi = diaChiRepository.findById(id).orElse(null);
 
         if (diaChi != null) {
-            diaChi.setThanhPho(newDiaChi.getThanhPho());
-            diaChi.setHuyen(newDiaChi.getHuyen());
-            diaChi.setXa(newDiaChi.getXa());
+            diaChi.setTinhThanh(newDiaChi.getTinhThanh());
+            diaChi.setPhuongXa(newDiaChi.getPhuongXa());
+            diaChi.setQuanHuyen(newDiaChi.getQuanHuyen());
             diaChi.setCuThe(newDiaChi.getCuThe());
             diaChi.setThietLapMacDinh(newDiaChi.getThietLapMacDinh());
             diaChi.setStatus(newDiaChi.getStatus());

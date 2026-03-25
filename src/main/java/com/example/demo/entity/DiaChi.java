@@ -13,27 +13,30 @@ public class DiaChi {
     @Column(name = "DC_ID")
     private Long id;
 
-    // @Column(name = "DC_VTND_ID")
-    // private UUID userId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DC_VTND_ID", referencedColumnName = "VTND_Id")
     private VaiTroNguoiDung vaiTroNguoiDung;
 
-    @Column(name = "DC_ThanhPho")
-    private String thanhPho;
+    @Column(name = "DC_TinhThanh") 
+    private String tinhThanh; // Ví dụ: Thành phố Hà Nội, Tỉnh Nam Định
 
-    @Column(name = "DC_Huyen")
-    private String huyen;
+    @Column(name = "DC_QuanHuyen")
+    private String quanHuyen; // Quận, Huyện, Thị xã, Thành phố thuộc tỉnh
 
-    @Column(name = "DC_Xa")
-    private String xa;
+    @Column(name = "DC_PhuongXa")
+    private String phuongXa; // Phường, Xã, Thị trấn
 
     @Column(name = "DC_CuThe")
-    private String cuThe;
+    private String cuThe; // Số nhà, tên đường, ngõ ngách
+
+    // Thêm trường này để dễ dàng hiển thị hoặc in hóa đơn
+    @Column(name = "DC_DiaChiDayDu")
+    private String diaChiDayDu; 
 
     @Column(name = "DC_ThietLapMacDinh")
-    private Long thietLapMacDinh; // 1 la mac dinh, 0 la khong mac dinh
+    private Integer thietLapMacDinh; // Dùng Integer/Boolean cho 0-1 sẽ chuẩn hơn Long
 
     @Column(name = "DC_Status")
-    private Long status; //1 = con su dung , 0 = khong con su dung
+    private Integer status; // 1: Active, 0: Deleted
 }
+

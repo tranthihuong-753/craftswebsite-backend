@@ -5,6 +5,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\ApiCon
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\ChungChiController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\DanhMucController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\DiaChiController.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\GioHangController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\LoaiSanPhamController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\NguoiDungController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\NhatKyKiemToanController.java
@@ -13,6 +14,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\SanPha
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\SanPhamCoSanController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\TaiKhoanNganHangController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\ThongTinNguoiBanController.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\ThoYeuThichController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroApiController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroNguoiDungController.java
@@ -29,6 +31,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\Api.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\ChungChi.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\DanhMuc.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\DiaChi.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\GioHang.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\LoaiSanPham.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\NguoiDung.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\NhatKyKiemToan.java
@@ -38,6 +41,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\SanPhamCoS
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\SanPhamDatLam.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\TaiKhoanNganHang.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\ThongTinNguoiBan.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\ThoYeuThich.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\VaiTro.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\VaiTroApi.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\VaiTroNguoiDung.java
@@ -66,6 +70,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\ApiRep
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\ChungChiRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\DanhMucRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\DiaChiRepository.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\GioHangRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\LoaiSanPhamRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\NguoiDungRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\NhatKyKiemToanRepository.java
@@ -75,6 +80,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\SanPha
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\SanPhamRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\TaiKhoanNganHangRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\ThongTinNguoiBanRepository.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\ThoYeuThichRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VaiTroApiRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VaiTroNguoiDungRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VaiTroRepository.java
@@ -85,6 +91,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\ChungChiS
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DanhMucService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DiaChiService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\GenSecret.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\GioHangService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\JwtService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\LoaiSanPhamService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\NguoiDungService.java
@@ -94,6 +101,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\SanPhamCo
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\SanPhamService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\TaiKhoanNganHangService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\ThongTinNguoiBanService.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\ThoYeuThichService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\VaiTroApiService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\VaiTroNguoiDungService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\VaiTroService.java
