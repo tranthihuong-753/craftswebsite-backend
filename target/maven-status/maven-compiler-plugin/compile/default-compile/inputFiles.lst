@@ -19,9 +19,11 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTro
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroNguoiDungController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\DemoApplication.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\MediaDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamCoSanRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationProjection.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamSearchDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ScanCCCDRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SellerProductDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SellerRegisterRequest.java

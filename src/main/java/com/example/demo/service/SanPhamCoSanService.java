@@ -1,13 +1,16 @@
 package com.example.demo.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.demo.dto.MediaDTO;
 import com.example.demo.dto.SanPhamCoSanRequest;
 import com.example.demo.dto.SanPhamModerationDTO;
 import com.example.demo.dto.SanPhamModerationProjection;
+import com.example.demo.dto.SanPhamSearchDTO;
 import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.AnhVideoSanPham;
 import com.example.demo.entity.ChungChi;
 import com.example.demo.entity.DanhMuc;
+import com.example.demo.entity.NguoiDung;
 import com.example.demo.entity.NhatKyKiemToan;
 import com.example.demo.entity.SanPham;
 import com.example.demo.entity.SanPhamCoSan;
@@ -222,22 +225,21 @@ public class SanPhamCoSanService {
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
         
-        UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
+        // UUID sellerId = thongTinNguoiBanService.getSellerIdByUserId(userId);
 
-        if (sellerId == null) {
-            throw new RuntimeException("Bạn chưa có tài khoản người bán");
-        }
+        // if (sellerId == null) {
+        //     throw new RuntimeException("Bạn chưa có tài khoản người bán");
+        // }
 
-        if (!spcs.getSanPham()
-            .getThongTinNguoiBan()
-            .getId()
-            .equals(sellerId)) {
+        // if (!spcs.getSanPham()
+        //     .getThongTinNguoiBan()
+        //     .getId()
+        //     .equals(sellerId)) {
 
-            throw new RuntimeException("Không có quyền truy cập sản phẩm này");
-        }
+        //     throw new RuntimeException("Không có quyền truy cập sản phẩm này");
+        // }
 
         return spcs;
-
     }
 
     // UPDATE SAN PHAM BANG Id SAN PHAM
@@ -461,5 +463,57 @@ public class SanPhamCoSanService {
 
         return sanPhamCoSanRepository.save(sanPhamCoSan);
     } 
+
+    // TIM KIEM SAN PHAM BEN USER 
+    public Page<SanPhamSearchDTO> search(String keyword, Pageable pageable) {
+
+        Page<SanPhamCoSan> page = sanPhamCoSanRepository.search(keyword, pageable);
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            page = sanPhamCoSanRepository.findAllByTrangThaiDangBan(pageable);
+        } else {
+            page = sanPhamCoSanRepository.search(keyword, pageable);
+        }
+
+        return page.map(this::toDTO);
+    }
+
+    // TIM KIEM SAN PHAM BEN USER 
+    private SanPhamSearchDTO toDTO(SanPhamCoSan spcs) {
+
+        SanPham sp = spcs.getSanPham();
+        ThongTinNguoiBan ttnb = sp.getThongTinNguoiBan();
+        NguoiDung nd = ttnb.getNguoiDung();
+
+        // MEDIA
+        List<MediaDTO> media = sp.getAnhVideos().stream()
+                .map(av -> {
+                    String url = av.getLink();
+                    String type = url.endsWith(".mp4") ? "video" : "image";
+                    return new MediaDTO(type, url);
+                })
+                .toList();
+
+        // AVATAR
+        String avatar = nd.getAnhVideo_anhChanDung() != null
+                ? nd.getAnhVideo_anhChanDung().getLink()
+                : null;
+
+        // CERTIFICATE
+        ChungChi cc = sp.getChungChi();
+
+        return new SanPhamSearchDTO(
+                spcs.getId(),
+                nd.getTen(),
+                avatar,
+                spcs.getMoTa(),
+                media,
+                spcs.getGia(),
+                spcs.getSoLuongHienTai(),
+                cc != null ? cc.getDiemTrungBinh() : 0,
+                cc != null ? cc.getTongDanhGia() : 0,
+                cc != null ? "/certificate/" + cc.getId() : "#"
+        );
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.SanPhamCoSanRequest;
 import com.example.demo.dto.SanPhamModerationDTO;
+import com.example.demo.dto.SanPhamSearchDTO;
 import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.enums.TrangThaiSanPham;
@@ -150,4 +151,15 @@ public class SanPhamCoSanController {
         Page<SanPhamModerationDTO> result = sanPhamCoSanService.getModerationProducts(status, search, page, size, sort);
         return ResponseEntity.ok(result);
     }
+
+    // TIM KIEM SAN PHAM BEN USER 
+    @GetMapping("/moderation-products-user")
+    public Page<SanPhamSearchDTO> search(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return sanPhamCoSanService.search(search, PageRequest.of(page, size));
+    }
+
 }
