@@ -4,8 +4,11 @@ import com.example.demo.entity.GioHang;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface GioHangRepository extends JpaRepository<GioHang, Long> {
 
-
+    Optional<GioHang> findByVaiTroNguoiDung_IdAndSanPham_Id(UUID vtndId, Long spId);
+    
 }

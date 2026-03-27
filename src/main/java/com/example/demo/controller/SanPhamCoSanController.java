@@ -157,7 +157,7 @@ public class SanPhamCoSanController {
     public Page<SanPhamSearchDTO> search(
             @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "20") int size
     ) {
         return sanPhamCoSanService.search(search, PageRequest.of(page, size));
     }

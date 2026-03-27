@@ -116,4 +116,5 @@ public interface SanPhamCoSanRepository extends JpaRepository<SanPhamCoSan, Long
         WHERE sp.trangThai = 'DANG_BAN'
     """)
     Page<SanPhamCoSan> findAllByTrangThaiDangBan(Pageable pageable);
+    
 }
