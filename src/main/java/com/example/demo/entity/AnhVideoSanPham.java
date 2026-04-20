@@ -26,4 +26,7 @@ public class AnhVideoSanPham {
     @Column(name = "AVSP_ThuTu")
     private Long thuTu;
 
+    @Column(name = "AVSP_type")
+    private String type; // image | video
+
 }

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.GioHang;
+import com.example.demo.repository.GioHangRepository;
 import com.example.demo.service.GioHangService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,32 +20,112 @@ public class GioHangController {
     @Autowired
     private GioHangService service;
 
-    @PostMapping
-    public GioHang add(@RequestBody GioHang gh) {
-        return service.add(gh);
+    @Autowired
+    private GioHangRepository gioHangRepository;
+
+    // THEM SP VAO GIO HANG 
+    @PostMapping("/cart/add/{spcsId}")
+    public ResponseEntity<?> addToCart(
+            @PathVariable Long spcsId,
+            HttpServletRequest request
+    ) {
+        String userIdStr = (String) request.getAttribute("userId");
+
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        GioHang gh = service.addToCart(spcsId, userId);
+
+        return ResponseEntity.ok(gh);
     }
 
+    // LAY SAN PHAM THEO USER ID DE HIEN THI TRONG GIO HANG 
+    @GetMapping
+    public ResponseEntity<?> getCart(HttpServletRequest request) {
+
+        String userIdStr = (String) request.getAttribute("userId");
+
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        return ResponseEntity.ok(service.getCart(userId));
+    }
+
+    // TICK/ BO TICK SAN PHAM PHUC VU CHO DAT HANG 
+    @PatchMapping("/{id}/check")
+    public ResponseEntity<?> toggleCheck(
+            @PathVariable Long id,
+            HttpServletRequest request
+    ) {
+
+        String userIdStr = (String) request.getAttribute("userId");
+        UUID userId = UUID.fromString(userIdStr);
+
+        GioHang gh = gioHangRepository.findById(id).orElseThrow();
+
+        if (!gh.getVaiTroNguoiDung().getNguoiDung().getId().equals(userId)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        gh.setDuocChon(!gh.getDuocChon());
+        gioHangRepository.save(gh);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // CHINH SUA SO LUONG SAN PHAM TRONG GIO HANG 
+    @PatchMapping("/{id}/quantity")
+    public ResponseEntity<?> updateQuantity(
+            @PathVariable Long id,
+            @RequestParam Integer quantity,
+            HttpServletRequest request
+    ) {
+
+        String userIdStr = (String) request.getAttribute("userId");
+        UUID userId = UUID.fromString(userIdStr);
+
+        GioHang gh = gioHangRepository.findById(id).orElseThrow();
+
+        if (!gh.getVaiTroNguoiDung().getNguoiDung().getId().equals(userId)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        gh.setSoLuong(quantity);
+        gioHangRepository.save(gh);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // XOA SAN PHAM KHOI GIO HANG 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<?> delete(
+            @PathVariable Long id,
+            HttpServletRequest request
+    ) {
+
+        String userIdStr = (String) request.getAttribute("userId");
+        UUID userId = UUID.fromString(userIdStr);
+        System.out.println("userId: " + userId);
+
+        GioHang gh = gioHangRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+
+        // 🔥 CHECK QUYỀN SỞ HỮU
+        if (!gh.getVaiTroNguoiDung().getNguoiDung().getId().equals(userId)) {
+            System.out.println("userId: " + gh.getVaiTroNguoiDung().getId());
+            System.out.println("Khong khop ID user");
+            return ResponseEntity.status(403).body("Forbidden");
+        }
+
+        gioHangRepository.delete(gh);
+
+        return ResponseEntity.ok().build();
     }
-
-@PostMapping("/cart/add/{spcsId}")
-public ResponseEntity<?> addToCart(
-        @PathVariable Long spcsId,
-        HttpServletRequest request
-) {
-    String userIdStr = (String) request.getAttribute("userId");
-
-    if (userIdStr == null) {
-        return ResponseEntity.status(401).body("Unauthorized");
-    }
-
-    UUID userId = UUID.fromString(userIdStr);
-
-    GioHang gh = service.addToCart(spcsId, userId);
-
-    return ResponseEntity.ok(gh);
-}
 
 }

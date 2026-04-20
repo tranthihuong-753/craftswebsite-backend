@@ -1,6 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.CartResponse;
+import com.example.demo.dto.MediaDTO;
+import com.example.demo.dto.ProductDTO;
+import com.example.demo.dto.ShopDTO;
 import com.example.demo.entity.GioHang;
+import com.example.demo.entity.SanPham;
 import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.entity.VaiTroNguoiDung;
 import com.example.demo.repository.GioHangRepository;
@@ -11,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +49,7 @@ public class GioHangService {
         repository.deleteById(id);
     }
 
+    // THEM SP VAO GIO HANG 
     public GioHang addToCart(Long spcsId, UUID userId) {
 
         // lấy VaiTroNguoiDung (user)
@@ -77,6 +86,61 @@ public class GioHangService {
         gh.setDuocChon(true);
 
         return gioHangRepository.save(gh);
+    }
+
+    // LAY SAN PHAM THEO USER ID DE HIEN THI TRONG GIO HANG 
+    public CartResponse getCart(UUID userId) {
+
+        List<GioHang> items = gioHangRepository.findByVaiTroNguoiDung_NguoiDung_Id(userId);
+
+        Map<UUID, ShopDTO> shopMap = new LinkedHashMap<>();
+
+        for (GioHang gh : items) {
+
+            SanPham sp = gh.getSanPham();
+            UUID shopId = sp.getThongTinNguoiBan().getId();
+            String shopName = sp.getThongTinNguoiBan().getNguoiDung().getTen();
+
+            ShopDTO shop = shopMap.get(shopId);
+
+            if (shop == null) {
+                shop = new ShopDTO();
+                shop.setShopId(shopId);
+                shop.setShopName(shopName);
+                shop.setChecked(true);
+                shop.setProducts(new ArrayList<>());
+                shopMap.put(shopId, shop);
+            }
+
+            ProductDTO p = new ProductDTO();
+            p.setCartItemId(gh.getId());
+            p.setProductId(sp.getId());
+            p.setName("Tên sản phẩm"); // TODO
+            p.setPrice(gh.getDonGiaSnapshot());
+            p.setQuantity(gh.getSoLuong());
+            p.setChecked(gh.getDuocChon());
+
+            // MEDIA
+            List<MediaDTO> media = sp.getAnhVideos().stream()
+                    .map(av -> new MediaDTO(
+                            av.getType() != null ? av.getType().toString() : "image",
+                            av.getLink()
+                    ))
+                    .toList();
+
+            p.setMedia(media);
+
+            shop.getProducts().add(p);
+
+            if (!gh.getDuocChon()) {
+                shop.setChecked(false);
+            }
+        }
+
+        CartResponse res = new CartResponse();
+        res.setShops(new ArrayList<>(shopMap.values()));
+
+        return res;
     }
 
 }

@@ -1,5 +1,6 @@
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\CorsConfig.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\DataInitializer.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\SecurityConfig.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\AnhVideoController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\ApiController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\ChungChiController.java
@@ -19,7 +20,9 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTro
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroNguoiDungController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\DemoApplication.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\CartResponse.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\MediaDTO.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ProductDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamCoSanRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationProjection.java
@@ -27,6 +30,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamSearch
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ScanCCCDRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SellerProductDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SellerRegisterRequest.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ShopDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\AnhVideo.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\AnhVideoSanPham.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\entity\Api.java
