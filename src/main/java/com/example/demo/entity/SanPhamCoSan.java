@@ -46,10 +46,13 @@ public class SanPhamCoSan {
     private BigDecimal giaGoc;
 
     @Column(name = "SPCS_SoLuongBanDau")
-    private Long soLuongBanDau;
+    private Integer soLuongBanDau;
 
     @Column(name = "SPCS_SoLuongHienTai")
-    private Long soLuongHienTai;
+    private Integer soLuongHienTai;
+
+    @Column(name = "SPCS_SoLuongTamGiu")
+    private Integer soLuongTamGiu;
 
     @Column(name = "SPCS_ThoiGianKetThuc")
     private LocalDateTime thoiGianKetThuc;
@@ -58,7 +61,7 @@ public class SanPhamCoSan {
     @Column(name = "SPCS_TrangThai")
     private TrangThaiSanPhamCoSan trangThai;
 
-    @Column(name = "SPCS_TimKiem")
+    @Column(name = "SPCS_TimKiem",  columnDefinition = "text")
     private String timKiem;
 
     @PrePersist
@@ -68,9 +71,13 @@ public class SanPhamCoSan {
         String text =
                 (moTa == null ? "" : moTa) +
                 (gia == null ? "" : gia.toString()) +
-                (soLuongBanDau == null ? "" : soLuongBanDau.toString());
+                String.valueOf(soLuongBanDau);
 
         this.timKiem = TextUtils.normalize(text);
+
+        if (soLuongTamGiu == null) {
+            soLuongTamGiu = 0;
+        }
     }
 
 }

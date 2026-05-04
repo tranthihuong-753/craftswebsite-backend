@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tblNguoiDung")
-@Data
+@Data 
 public class NguoiDung {
 
     @Id

@@ -6,11 +6,14 @@ import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.enums.TrangThaiSanPham;
 import com.example.demo.enums.TrangThaiSanPhamCoSan;
 
+import jakarta.persistence.LockModeType;
+
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
@@ -94,57 +97,33 @@ public interface SanPhamCoSanRepository extends JpaRepository<SanPhamCoSan, Long
         Pageable pageable
     );
 
-// @Query(value = """
-// SELECT 
-//     spcs.id as spcsId,
-//     nd.ten_dang_nhap as tenSeller,
-//     av.link as anhSanPham,
-//     sp.ngay_tao as ngayTao,
+    // TIM KIEM SAN PHAM BEN USER 
+    @Query("""
+        SELECT spcs FROM SanPhamCoSan spcs
+        JOIN spcs.sanPham sp
+        JOIN sp.thongTinNguoiBan ttnb
+        JOIN ttnb.nguoiDung nd
+        WHERE sp.trangThai = 'DANG_BAN'
+        AND (
+            LOWER(spcs.timKiem) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            OR LOWER(spcs.moTa) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            OR LOWER(nd.ten) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        )
+    """)
+    Page<SanPhamCoSan> search(@Param("keyword") String keyword, Pageable pageable);
 
-//     log.ngay_tao as ngayXuLy,
-//     log.id_tac_nhan as adminId,
-//     log.sieu_du_lieu as sieuDuLieu
+    // TIM KIEM SAN PHAM BEN USER 
+    @Query("""
+        SELECT spcs FROM SanPhamCoSan spcs
+        JOIN spcs.sanPham sp
+        WHERE sp.trangThai = 'DANG_BAN'
+    """)
+    Page<SanPhamCoSan> findAllByTrangThaiDangBan(Pageable pageable);
+    
+    // LOCK SAN PHAM CO SAN KHI CHECKOUT DE CHONG HET HANG
+    Optional<SanPhamCoSan> findById(Long id);
 
-// FROM tbl_san_pham_co_san spcs
-
-// JOIN tbl_san_pham sp
-//     ON spcs.san_pham_id = sp.id
-
-// JOIN tbl_thong_tin_nguoi_ban tt
-//     ON sp.ttnb_id = tt.id
-
-// JOIN tbl_nguoi_dung nd
-//     ON tt.nd_id = nd.id
-
-// LEFT JOIN tbl_anh_video_san_pham av
-//     ON av.san_pham_id = sp.id
-//     AND av.thu_tu = 1
-
-// LEFT JOIN tbl_nhat_ky_kiem_toan log
-//     ON log.id_muc_tieu = sp.id
-
-// WHERE sp.trang_thai = :trangThai
-// AND (
-//     :search IS NULL OR :search = '' OR
-
-//     CONCAT(
-//         LOWER(
-//             REPLACE(
-//                 REPLACE(nd.ten_dang_nhap, ' ', ''),
-//                 'đ', 'd'
-//             )
-//         ),
-//         DATE_FORMAT(sp.ngay_tao, '%d%m%Y')
-//     )
-//     LIKE CONCAT('%', :search, '%')
-// )
-
-// ORDER BY sp.ngay_tao DESC
-// """, nativeQuery = true)
-// Page<SanPhamModerationProjection> getModerationProductsFull(
-//     @Param("trangThai") String trangThai,
-//     @Param("search") String search,
-//     Pageable pageable
-// );
-
+    // TIM SAN PHAM CO SAN THEO ID SAN PHAM
+    Optional<SanPhamCoSan> findBySanPham_Id(Long sanPhamId);
+    
 }

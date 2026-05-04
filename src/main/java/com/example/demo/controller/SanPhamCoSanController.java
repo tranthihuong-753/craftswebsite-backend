@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.SanPhamCoSanRequest;
 import com.example.demo.dto.SanPhamModerationDTO;
+import com.example.demo.dto.SanPhamSearchDTO;
 import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.enums.TrangThaiSanPham;
@@ -23,7 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/san-pham-co-san")
+@RequestMapping("/san-pham-co-san") 
 @RequiredArgsConstructor
 public class SanPhamCoSanController {
 
@@ -150,4 +151,15 @@ public class SanPhamCoSanController {
         Page<SanPhamModerationDTO> result = sanPhamCoSanService.getModerationProducts(status, search, page, size, sort);
         return ResponseEntity.ok(result);
     }
+
+    // TIM KIEM SAN PHAM BEN USER 
+    @GetMapping("/moderation-products-user")
+    public Page<SanPhamSearchDTO> search(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return sanPhamCoSanService.search(search, PageRequest.of(page, size));
+    }
+
 }

@@ -14,6 +14,7 @@ import com.example.demo.entity.NguoiDung;
 import com.example.demo.entity.VaiTro;
 import com.example.demo.entity.VaiTroNguoiDung;
 import com.example.demo.enums.ND_Trangthaixacthuc;
+import com.example.demo.enums.TrangThaiVaiTro;
 import com.example.demo.model.ND_CCCD;
 import com.example.demo.repository.NguoiDungRepository;
 import com.example.demo.repository.VaiTroNguoiDungRepository;
@@ -116,8 +117,8 @@ public class NguoiDungService {
         ND_CCCD cccd = cccdService.scanCCCD(imageUrl);
 
         if (cccd == null) {
-        throw new RuntimeException("Không đọc được CCCD");
-    }
+            throw new RuntimeException("Không đọc được CCCD");
+        }
 
         nd.setCccd(cccd);
         nd.setTen(cccd.getHoTen());
@@ -138,20 +139,8 @@ public class NguoiDungService {
 
     // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     public Map<String, Object> dangKyBangSDT(String sdt) {
-        // Optional<NguoiDung> existing = nguoiDungRepository.findBySdt(sdt);
         
         Map<String, Object> result = new HashMap<>();
-
-        // if(existing.isPresent()){
-        //     NguoiDung nd = existing.get();
-
-        //     String token = jwtService.generateToken(nd);
-
-        //     result.put("token", token);
-        //     result.put("user", nd);  
-
-        //     return result; 
-        // }
 
         NguoiDung nd = new NguoiDung();
 
@@ -160,8 +149,17 @@ public class NguoiDungService {
 
         NguoiDung nd_ = nguoiDungRepository.save(nd);
 
-        String token = jwtService.generateToken(nd_);
-        
+        UUID userId = nd_.getId();
+
+        List<VaiTroNguoiDung> list =
+                vtndRepository.findByNguoiDung_Id(userId);
+
+        List<String> roles = list.stream()
+                .map(v -> v.getVaiTro().getLoai())
+                .toList();
+
+        String token = jwtService.generateToken(nd_, roles);
+
         result.put("token", token);
         result.put("user", nd_);
 
@@ -186,10 +184,10 @@ public class NguoiDungService {
         NguoiDung saved = nguoiDungRepository.save(nd);
 
         // gán role BUYER
-        VaiTro roleBuyer = vaiTroRepository.findByLoai("BUYER");
         VaiTroNguoiDung vtnd = new VaiTroNguoiDung();
         vtnd.setNguoiDung(saved);
-        vtnd.setVaiTro(roleBuyer);
+        vtnd.setVaiTro(vaiTroRepository.findByLoai("BUYER"));
+        vtnd.setTrangThai(TrangThaiVaiTro.HOAT_DONG);
         vtndRepository.save(vtnd);
 
         return saved;
@@ -199,6 +197,7 @@ public class NguoiDungService {
         return nguoiDungRepository.findAllTenDangNhap();
     }
 
+    // ĐĂNG NHẬP 
     public Map<String, Object> login(String username, String password) {
 
         Optional<NguoiDung> userOpt =
@@ -222,7 +221,9 @@ public class NguoiDungService {
                 .toList();
 
         Map<String, Object> result = new HashMap<>();
-        String token = jwtService.generateToken(user);
+
+        String token = jwtService.generateToken(user, roles);
+
         result.put("token", token);
         result.put("roles", roles);
 

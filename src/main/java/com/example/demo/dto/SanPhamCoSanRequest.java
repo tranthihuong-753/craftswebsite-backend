@@ -12,6 +12,8 @@ import java.util.UUID;
 @Data
 public class SanPhamCoSanRequest {
 
+    private String ten;
+
     private String moTa;
 
     private BigDecimal gia;
@@ -26,9 +28,11 @@ public class SanPhamCoSanRequest {
 
     private BigDecimal giaGoc;
 
-    private Long soLuongBanDau;
+    private Integer soLuongBanDau;
 
-    private Long soLuongHienTai;
+    private Integer soLuongTamGiu;
+
+    private Integer soLuongHienTai;
 
     private TrangThaiSanPhamCoSan trangThaiSPCS;
 
@@ -42,5 +46,9 @@ public class SanPhamCoSanRequest {
 
     private TrangThaiChungChi trangThaiChungChi;
 
-    private List<String> mediaLinks;
+    private String coverUrls;
+
+    private List<String> imageUrls;
+
+    private List<String> videoUrls;
 }
