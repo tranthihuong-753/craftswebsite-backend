@@ -2,8 +2,11 @@ package com.example.demo.repository;
 
 import com.example.demo.dto.SanPhamModerationDTO;
 import com.example.demo.entity.SanPham;
+import com.example.demo.entity.TaiKhoanNganHang;
 import com.example.demo.enums.TrangThaiSanPham;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +24,8 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Long> {
         UUID thongTinNguoiBanId,
         TrangThaiSanPham trangThai
     );
+
+    /// 
+    List<SanPham> findByIdIn(List<Long> ids);
+
 }

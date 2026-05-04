@@ -6,11 +6,14 @@ import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.enums.TrangThaiSanPham;
 import com.example.demo.enums.TrangThaiSanPhamCoSan;
 
+import jakarta.persistence.LockModeType;
+
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
@@ -116,5 +119,11 @@ public interface SanPhamCoSanRepository extends JpaRepository<SanPhamCoSan, Long
         WHERE sp.trangThai = 'DANG_BAN'
     """)
     Page<SanPhamCoSan> findAllByTrangThaiDangBan(Pageable pageable);
+    
+    // LOCK SAN PHAM CO SAN KHI CHECKOUT DE CHONG HET HANG
+    Optional<SanPhamCoSan> findById(Long id);
+
+    // TIM SAN PHAM CO SAN THEO ID SAN PHAM
+    Optional<SanPhamCoSan> findBySanPham_Id(Long sanPhamId);
     
 }

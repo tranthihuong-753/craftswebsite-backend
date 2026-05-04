@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class AnhVideoSanPham {
 
-    @Id
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AVSP_Id")
     private Long id;
@@ -24,7 +24,7 @@ public class AnhVideoSanPham {
     private String link;
 
     @Column(name = "AVSP_ThuTu")
-    private Long thuTu;
+    private Integer thuTu;
 
     @Column(name = "AVSP_type")
     private String type; // image | video

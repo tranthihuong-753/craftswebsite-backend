@@ -67,41 +67,60 @@ public class ThongTinNguoiBanController {
     }
 
     // TAO TAI KHOAN NGUOI BAN
-    @PostMapping
+    // @PostMapping
+    // public ResponseEntity<?> registerSeller(
+    //         @RequestBody SellerRegisterRequest req,
+    //         HttpServletRequest request) {
+
+    //     System.out.println(req);
+    //     String userId = (String) request.getAttribute("userId");
+
+    //     if (userId == null) {
+    //         return ResponseEntity.status(401).body(
+    //                 Map.of("error", "Unauthorized")
+    //         );
+    //     }
+
+    //     UUID uid;
+    //     try {
+    //         uid = UUID.fromString(userId);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(401).body(
+    //                 Map.of("error", "Token không hợp lệ")
+    //         );
+    //     }
+
+    //     try {
+    //         service.registerSeller(uid, req);
+
+    //         return ResponseEntity.ok(
+    //                 Map.of("message", "Đăng ký người bán thành công")
+    //         );
+
+    //     } catch (RuntimeException e) {
+    //         return ResponseEntity
+    //                 .status(HttpStatus.BAD_REQUEST)
+    //                 .body(Map.of("error", e.getMessage()));
+    //     }
+    // }
+
+    // TAO TAI KHOAN NGUOI BAN - VERSION 2 (KHONG DUNG MAP DE TRA VE MESSAGE)
+    @PostMapping("/register")
     public ResponseEntity<?> registerSeller(
-            @RequestBody SellerRegisterRequest req,
-            HttpServletRequest request) {
+            @RequestBody SellerRegisterRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        String userIdStr = (String) httpRequest.getAttribute("userId");
 
-        System.out.println(req);
-        String userId = (String) request.getAttribute("userId");
-
-        if (userId == null) {
-            return ResponseEntity.status(401).body(
-                    Map.of("error", "Unauthorized")
-            );
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
         }
 
-        UUID uid;
-        try {
-            uid = UUID.fromString(userId);
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body(
-                    Map.of("error", "Token không hợp lệ")
-            );
-        }
+        UUID userId = UUID.fromString(userIdStr);
 
-        try {
-            service.registerSeller(uid, req);
+        service.registerSeller(userId, request);
 
-            return ResponseEntity.ok(
-                    Map.of("message", "Đăng ký người bán thành công")
-            );
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", e.getMessage()));
-        }
+        return ResponseEntity.ok("Đăng ký seller thành công");
     }
 
     @GetMapping("/me")

@@ -27,6 +27,10 @@ public class SanPham {
     @JoinColumn(name = "SP_LSP_Id", referencedColumnName = "LSP_Id")
     private LoaiSanPham loaiSanPham;
 
+    // Tên sản phẩm
+    @Column(name = "SP_Ten")
+    private String ten;
+
     // Danh mục
     @ManyToOne
     @JoinColumn(name = "SP_DM_Id", referencedColumnName = "DM_Id")
@@ -65,5 +69,4 @@ public class SanPham {
         this.ngayCapNhat = LocalDateTime.now();
     }
     
-
 }

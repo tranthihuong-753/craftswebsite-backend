@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.DiaChi;
 import com.example.demo.repository.DiaChiRepository;
+import com.example.demo.repository.VaiTroNguoiDungRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class DiaChiService {
@@ -15,6 +19,7 @@ public class DiaChiService {
     @Autowired
     private DiaChiRepository diaChiRepository;
 
+    // TẠO ĐỊA CHỈ MỚI
     public DiaChi createDiaChi(DiaChi diaChi) {
         return diaChiRepository.save(diaChi);
     }
@@ -51,4 +56,8 @@ public class DiaChiService {
     public void deleteDiaChi(Long id) {
         diaChiRepository.deleteById(id);
     }
+
+    @Autowired
+    private JwtService jwtService;
+    
 }

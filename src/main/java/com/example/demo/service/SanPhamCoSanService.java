@@ -10,6 +10,7 @@ import com.example.demo.dto.SellerProductDTO;
 import com.example.demo.entity.AnhVideoSanPham;
 import com.example.demo.entity.ChungChi;
 import com.example.demo.entity.DanhMuc;
+import com.example.demo.entity.LoaiSanPham;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.entity.NhatKyKiemToan;
 import com.example.demo.entity.SanPham;
@@ -83,7 +84,7 @@ public class SanPhamCoSanService {
     // TAO SAN PHAM CO SAN 
     // Tạo mới sản phẩm có sẵn
     // loaisanpham duoc admind cap nhat
-    // danhmucsanpham duoc admind cap nhat
+    // danhmucsanpham duoc admind cap nhat 
     @Transactional
     public SanPhamCoSan createSanPhamCoSan(
             SanPhamCoSanRequest request,
@@ -111,7 +112,7 @@ public class SanPhamCoSanService {
         chungChi.setDiemTrungBinh(0f);
         chungChi.setTongDanhGia(0L);
         chungChi.setTrangThai(request.getTrangThaiChungChi());
-        chungChi = chungChiRepository.save(chungChi);        
+        ChungChi chungChi_ = chungChiRepository.save(chungChi);        
 
         // tạo sản phẩm
         SanPham sanPham = new SanPham();
@@ -119,26 +120,52 @@ public class SanPhamCoSanService {
         sanPham.setDanhMuc(danhMuc);
         sanPham.setTrangThai(request.getTrangThaiSanPham());
         sanPham.setSoGioLamViecUocTinh(request.getSoGioLamViecUocTinh());
-        sanPham.setChungChi(chungChi);
-        sanPham = sanPhamRepository.save(sanPham);
+        sanPham.setChungChi(chungChi_);
+        sanPham.setTen(request.getTen());
+        SanPham sanPham_ = sanPhamRepository.save(sanPham);
 
-        // lưu ảnh và video
-        if (request.getMediaLinks() != null && !request.getMediaLinks().isEmpty()) {
-            long order = 1;
-            for (String link : request.getMediaLinks()) {
+        // lưu ảnh và video   cover: coverUrls[0] || null, images: imageUrls, videos: videoUrls,
+        if (request.getImageUrls() != null && !request.getImageUrls().isEmpty()) {
+            Integer order = 1; 
+            for (String link : request.getImageUrls()) {
 
                 AnhVideoSanPham media = new AnhVideoSanPham();
-                media.setSanPham(sanPham);
+                media.setSanPham(sanPham_);
                 media.setLink(link);
                 media.setThuTu(order++);
+                media.setType("IMAGE"); // hoặc "VIDEO" nếu bạn muốn phân biệt
 
                 anhVideoSanPhamRepository.save(media);
             }
         }
 
+        if (request.getVideoUrls() != null && !request.getVideoUrls().isEmpty()) {
+            Integer order = 1;
+            for (String link : request.getVideoUrls()) {
+
+                AnhVideoSanPham media = new AnhVideoSanPham();
+                media.setSanPham(sanPham_);
+                media.setLink(link);
+                media.setThuTu(order++);
+                media.setType("VIDEO"); // hoặc "IMAGE" nếu bạn muốn phân biệt
+
+                anhVideoSanPhamRepository.save(media);
+            }
+        }
+
+        if (request.getCoverUrls() != null && !request.getCoverUrls().isEmpty()) {
+            AnhVideoSanPham media = new AnhVideoSanPham();
+            media.setSanPham(sanPham_);
+            media.setLink(request.getCoverUrls());
+            media.setThuTu(0); // cover luôn có thứ tự 0
+            media.setType("IMAGE"); // giả sử cover luôn là ảnh
+
+            anhVideoSanPhamRepository.save(media);
+        }
+
         // update id mục tiêu cho chứng chỉ
-        chungChi.setIdMucTieu(sanPham.getId());
-        chungChiRepository.save(chungChi);
+        chungChi_.setIdMucTieu(sanPham_.getId());
+        chungChiRepository.save(chungChi_);
 
         // tạo sản phẩm có sẵn
         SanPhamCoSan sanPhamCoSan = new SanPhamCoSan();
@@ -152,7 +179,7 @@ public class SanPhamCoSanService {
         sanPhamCoSan.setSoLuongBanDau(request.getSoLuongBanDau());
         sanPhamCoSan.setSoLuongHienTai(request.getSoLuongHienTai());
         sanPhamCoSan.setTrangThai(request.getTrangThaiSPCS());
-        sanPhamCoSan.setSanPham(sanPham);
+        sanPhamCoSan.setSanPham(sanPham_);
 
         return sanPhamCoSanRepository.save(sanPhamCoSan);
     }
@@ -301,6 +328,7 @@ public class SanPhamCoSanService {
 
         sanPham.setTrangThai(request.getTrangThaiSanPham());
         sanPham.setSoGioLamViecUocTinh(request.getSoGioLamViecUocTinh());
+        sanPham.setTen(request.getTen());
 
         // update danh mục nếu có thay đổi
         if (request.getDanhMucId() != null) {
@@ -315,20 +343,43 @@ public class SanPhamCoSanService {
         sanPhamRepository.save(sanPham);
         
         // update media
-        if (request.getMediaLinks() != null) {
+        if ((request.getImageUrls() != null && !request.getImageUrls().isEmpty())
+                || (request.getVideoUrls() != null && !request.getVideoUrls().isEmpty())
+                || (request.getCoverUrls() != null && !request.getCoverUrls().isEmpty())) {
 
             // xóa media cũ
             anhVideoSanPhamRepository.deleteBySanPhamId(sanPham.getId());
 
-            long order = 1;
+            Integer order = 1;
 
-            for (String link : request.getMediaLinks()) {
+            if (request.getImageUrls() != null && !request.getImageUrls().isEmpty()) {
+                for (String link : request.getImageUrls()) {
+                    AnhVideoSanPham media = new AnhVideoSanPham();
+                    media.setSanPham(sanPham);
+                    media.setLink(link);
+                    media.setThuTu(order++);
+                    media.setType("IMAGE");
+                    anhVideoSanPhamRepository.save(media);
+                }
+            }
 
+            if (request.getVideoUrls() != null && !request.getVideoUrls().isEmpty()) {
+                for (String link : request.getVideoUrls()) {
+                    AnhVideoSanPham media = new AnhVideoSanPham();
+                    media.setSanPham(sanPham);
+                    media.setLink(link);
+                    media.setThuTu(order++);
+                    media.setType("VIDEO");
+                    anhVideoSanPhamRepository.save(media);
+                }
+            }
+
+            if (request.getCoverUrls() != null && !request.getCoverUrls().isEmpty()) {
                 AnhVideoSanPham media = new AnhVideoSanPham();
                 media.setSanPham(sanPham);
-                media.setLink(link);
-                media.setThuTu(order++);
-
+                media.setLink(request.getCoverUrls());
+                media.setThuTu(0);
+                media.setType("IMAGE");
                 anhVideoSanPhamRepository.save(media);
             }
         }
@@ -509,9 +560,9 @@ public class SanPhamCoSanService {
                 spcs.getMoTa(),
                 media,
                 spcs.getGia(),
-                spcs.getSoLuongHienTai(),
-                cc != null ? cc.getDiemTrungBinh() : 0,
-                cc != null ? cc.getTongDanhGia() : 0,
+                Long.valueOf(spcs.getSoLuongHienTai()),
+                cc != null ? cc.getDiemTrungBinh() : 0f,
+                cc != null ? cc.getTongDanhGia() : 0L,
                 cc != null ? "/certificate/" + cc.getId() : "#"
         );
     }

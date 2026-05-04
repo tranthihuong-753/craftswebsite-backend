@@ -24,7 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/san-pham-co-san")
+@RequestMapping("/san-pham-co-san") 
 @RequiredArgsConstructor
 public class SanPhamCoSanController {
 

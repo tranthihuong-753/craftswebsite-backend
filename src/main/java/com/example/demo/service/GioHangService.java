@@ -4,6 +4,7 @@ import com.example.demo.dto.CartResponse;
 import com.example.demo.dto.MediaDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ShopDTO;
+import com.example.demo.entity.AnhVideo;
 import com.example.demo.entity.GioHang;
 import com.example.demo.entity.SanPham;
 import com.example.demo.entity.SanPhamCoSan;
@@ -15,6 +16,7 @@ import com.example.demo.repository.VaiTroNguoiDungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -82,7 +84,7 @@ public class GioHangService {
         gh.setVaiTroNguoiDung(vtnd);
         gh.setSanPham(spcs.getSanPham());
         gh.setSoLuong(1);
-        gh.setDonGiaSnapshot(spcs.getGia().doubleValue());
+        gh.setDonGiaSnapshot(spcs.getGia());
         gh.setDuocChon(true);
 
         return gioHangRepository.save(gh);
@@ -109,26 +111,33 @@ public class GioHangService {
                 shop.setShopName(shopName);
                 shop.setChecked(true);
                 shop.setProducts(new ArrayList<>());
+                shop.setTienPhaiThanhToan(gh.getDonGiaSnapshot().multiply(BigDecimal.valueOf(gh.getSoLuong())));
+                shop.setPhiVanChuyen(BigDecimal.ZERO); 
                 shopMap.put(shopId, shop);
             }
 
             ProductDTO p = new ProductDTO();
             p.setCartItemId(gh.getId());
             p.setProductId(sp.getId());
-            p.setName("Tên sản phẩm"); // TODO
+            p.setName(sp.getTen());
             p.setPrice(gh.getDonGiaSnapshot());
             p.setQuantity(gh.getSoLuong());
             p.setChecked(gh.getDuocChon());
 
             // MEDIA
-            List<MediaDTO> media = sp.getAnhVideos().stream()
-                    .map(av -> new MediaDTO(
-                            av.getType() != null ? av.getType().toString() : "image",
-                            av.getLink()
-                    ))
+            List<String> images = sp.getAnhVideos().stream()
+                    .filter(av -> "IMAGE".equals(av.getType()))
+                    .map(av -> av.getLink())
                     .toList();
 
-            p.setMedia(media);
+            List<String> videos = sp.getAnhVideos().stream()
+                    .filter(av -> "VIDEO".equals(av.getType()))
+                    .map(av -> av.getLink())
+                    .toList();
+
+
+            p.setImageUrls(images);
+            p.setVideoUrls(videos);
 
             shop.getProducts().add(p);
 

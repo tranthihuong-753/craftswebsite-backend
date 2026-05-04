@@ -15,7 +15,7 @@ public class DiaChi {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DC_VTND_ID", referencedColumnName = "VTND_Id")
-    private VaiTroNguoiDung vaiTroNguoiDung;
+    private VaiTroNguoiDung vaiTroNguoiDung; 
 
     @Column(name = "DC_TinhThanh") 
     private String tinhThanh; // Ví dụ: Thành phố Hà Nội, Tỉnh Nam Định
@@ -34,7 +34,7 @@ public class DiaChi {
     private String diaChiDayDu; 
 
     @Column(name = "DC_ThietLapMacDinh")
-    private Integer thietLapMacDinh; // Dùng Integer/Boolean cho 0-1 sẽ chuẩn hơn Long
+    private Integer thietLapMacDinh; // Dùng Integer/Boolean cho 0-1 sẽ chuẩn hơn Long , 1 là mặc định 
 
     @Column(name = "DC_Status")
     private Integer status; // 1: Active, 0: Deleted

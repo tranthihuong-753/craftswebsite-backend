@@ -16,7 +16,7 @@ public class SellerProductDTO {
 
     private String moTa;
 
-    private Long soLuongBanDau;
+    private int soLuongBanDau;
 
     private Long chungChiId;
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,7 +32,7 @@ public class GioHang {
     private Integer soLuong;
 
     @Column(name = "GH_DonGiaSnapshot")
-    private Double donGiaSnapshot;
+    private BigDecimal donGiaSnapshot;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "GH_QuyTacThueSnapshot")
@@ -55,4 +56,9 @@ public class GioHang {
     public void preUpdate() {
         this.ngayCapNhat = LocalDateTime.now();
     }
+
+    // public void setDonGiaSnapshot(double doubleValue) {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'setDonGiaSnapshot'");
+    // }
 }

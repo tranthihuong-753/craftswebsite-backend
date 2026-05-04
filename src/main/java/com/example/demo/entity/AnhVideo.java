@@ -17,5 +17,5 @@ public class AnhVideo {
     private String link;
 
     @Column(name = "AV_type")
-    private String type; // image | video
+    private String type; // image | video  
 }
