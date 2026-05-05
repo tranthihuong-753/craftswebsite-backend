@@ -18,4 +18,7 @@ public interface AnhVideoSanPhamRepository extends JpaRepository<AnhVideoSanPham
     void deleteBySanPhamId(Long sanPhamId);
 
     List<AnhVideoSanPham> findBySanPhamIdAndType(Long sanPhamId, String type);
+
+    // Laays anh dau tien theo sanPhamId
+    Optional<AnhVideoSanPham> findFirstBySanPhamIdAndTypeOrderByThuTuAsc(Long sanPhamId, String type);
 }

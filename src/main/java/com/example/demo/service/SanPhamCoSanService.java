@@ -521,7 +521,8 @@ public class SanPhamCoSanService {
         Page<SanPhamCoSan> page = sanPhamCoSanRepository.search(keyword, pageable);
 
         if (keyword == null || keyword.trim().isEmpty()) {
-            page = sanPhamCoSanRepository.findAllByTrangThaiDangBan(pageable);
+            // page = sanPhamCoSanRepository.findAllByTrangThaiDangBan(pageable);
+            page = new PageImpl<>(sanPhamCoSanRepository.findFullProduct());
         } else {
             page = sanPhamCoSanRepository.search(keyword, pageable);
         }

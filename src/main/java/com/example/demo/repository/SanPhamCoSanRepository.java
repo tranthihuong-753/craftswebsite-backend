@@ -126,4 +126,11 @@ public interface SanPhamCoSanRepository extends JpaRepository<SanPhamCoSan, Long
     // TIM SAN PHAM CO SAN THEO ID SAN PHAM
     Optional<SanPhamCoSan> findBySanPham_Id(Long sanPhamId);
     
+    // LẤY FULL SAN PHAM CO SAN CHO MODERATOR
+    @Query("""
+        SELECT spcs
+        FROM SanPhamCoSan spcs
+    """)
+    List<SanPhamCoSan> findFullProduct();
+
 }

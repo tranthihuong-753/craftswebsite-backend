@@ -153,7 +153,7 @@ public class SanPhamCoSanController {
     }
 
     // TIM KIEM SAN PHAM BEN USER 
-    @GetMapping("/moderation-products-user")
+    @GetMapping("/moderation-products-user") 
     public Page<SanPhamSearchDTO> search(
             @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page,

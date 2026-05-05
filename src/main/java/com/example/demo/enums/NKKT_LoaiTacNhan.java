@@ -4,6 +4,8 @@ public enum NKKT_LoaiTacNhan {
 
     NGUOI_DUNG,
     ADMIN,
-    HE_THONG
-
+    HE_THONG,
+    SELLER,
+    BUYER,
+    
 }

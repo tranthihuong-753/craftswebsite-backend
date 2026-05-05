@@ -7,6 +7,10 @@ public enum NKKT_LoaiMucTieu {
     THANH_TOAN,
     HOP_DONG,
     SAN_PHAM,
-    HE_THONG
+    HE_THONG,
+    KHACH_HANG,
+    NHA_CUNG_CAP,
+    TAI_KHOAN_NGAN_HANG,
+    THONG_TIN_NGUOI_BAN,
 
 }

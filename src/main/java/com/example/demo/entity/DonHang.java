@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
+ 
 @Entity
 @Table(name = "tblDonHang")
 @Data
@@ -57,13 +57,13 @@ public class DonHang {
 
     @Column(name = "DH_TienPhaiThanhToan")
     private BigDecimal tienPhaiThanhToan;
-
+ 
     // Status
     @Column(name = "DH_TrangThai")
-    private String trangThai;
+    private String trangThai; //  CHO_XAC_NHAN > CHO_LAY_HANG > CHO_GIAO_HANG > DA_GIAO > TRA_HANG > DA_HUY
 
     @Column(name = "DH_TrangThaiThanhToan")
-    private String trangThaiThanhToan; // CHO_THANH_TOAN hoac DA_THANH_TOAN 
+    private String trangThaiThanhToan; // CHO_THANH_TOAN, DANG_XU_LY, DA_THANH_TOAN trong tblThanhToan
 
     // Time
     @Column(name = "DH_NgayDat")
@@ -75,7 +75,6 @@ public class DonHang {
     @Column(name = "DH_GhiChu")
     private String ghiChu;
 
-    
     // Cancel
     @Column(name = "DH_LyDoHuy")
     private String lyDoHuy;

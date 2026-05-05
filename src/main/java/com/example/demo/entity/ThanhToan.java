@@ -34,13 +34,12 @@ public class ThanhToan {
 
     @Column(name = "TT_ChuoiVietQR", columnDefinition = "TEXT")
     private String chuoiVietQR;
-
+ 
     @Column(name = "TT_TrangThai")
-    private String trangThai; 
-    // PENDING | CONFIRMED | FAILED
+    private String trangThai; // CHO_THANH_TOAN, DA_THANH_TOAN, DANG_XU_LY, DA_HOAN 
 
     @Column(name = "TT_NguoiXacNhan")
-    private Long nguoiXacNhan;
+    private Long nguoiXacNhan; 
 
     @Column(name = "TT_AV_Id_AnhMinhChung")
     private Long anhMinhChungId;
