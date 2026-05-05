@@ -32,21 +32,9 @@ public class OrderController {
 
     @Autowired private OrderService orderService;
 
-    @PostMapping("/checkout")
-    public ResponseEntity<?> checkout(@RequestBody CheckoutRequest req) {
-
-        return ResponseEntity.ok(orderService.checkout(req));
-    }
- 
-    // @PostMapping("/init")
-    // public List<DonHang> initOrder(@RequestBody InitOrderRequest request,
-    //                               HttpServletRequest httpRequest) {
-    //     return orderService.initOrder(request.getCartItemIds(), httpRequest);
-    // }
-
     @Autowired private JwtService jwtService;
 
-
+    // 
     @PostMapping("/init")
 
     public ResponseEntity<List<ShopDTO>> initOrders(@RequestBody Map<String, List<Long>> payload, HttpServletRequest request) {
@@ -57,27 +45,7 @@ public class OrderController {
 
     }
 
-
-    @PostMapping("/confirm-info")
-
-    public ResponseEntity<?> confirmInfo(@RequestBody List<OrderConfirmRequest> requests) {
-
-        orderService.confirmOrderInfo(requests);
-
-        return ResponseEntity.ok().build();
-
-    }
-
-
-    @GetMapping("/payment/info")
-
-    public ResponseEntity<List<PaymentInfoResponse>> getPaymentInfo(@RequestParam List<Long> orderIds) {
-
-        return ResponseEntity.ok(orderService.getPaymentInfos(orderIds));
-
-    }
-
-
+    // 
     @PostMapping("/payment/upload-proof")
     public ResponseEntity<?> uploadProof(
         @RequestBody List<PaymentProofRequest> requests

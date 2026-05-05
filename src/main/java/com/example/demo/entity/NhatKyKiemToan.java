@@ -4,12 +4,16 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
+
+import org.hibernate.annotations.JdbcTypeCode;
+
 import com.example.demo.enums.*;
 
 @Entity
 @Table(name = "tblNhatKyKiemToan")
-@Data
+@Data 
 public class NhatKyKiemToan {
 
     @Id
@@ -42,8 +46,12 @@ public class NhatKyKiemToan {
     @Column(name = "NKKT_DuLieuCu", columnDefinition = "json")
     private String duLieuCu;
 
-    @Column(name = "NKKT_DuLieuMoi", columnDefinition = "json")
-    private String duLieuMoi;
+    // @Column(name = "NKKT_DuLieuMoi", columnDefinition = "json")
+    // private String duLieuMoi;
+
+    @JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "NKKT_DuLieuMoi")
+    private Map<String, Object> duLieuMoi;
 
     // khoang_cach, ly_do, diem...
     @Column(name = "NKKT_SieuDuLieu", columnDefinition = "json")

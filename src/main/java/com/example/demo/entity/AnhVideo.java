@@ -12,7 +12,7 @@ public class AnhVideo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AV_Id")
     private Long id;
-
+ 
     @Column(name = "AV_Link")
     private String link;
 

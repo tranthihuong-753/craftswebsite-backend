@@ -20,7 +20,6 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, UUID> {
     List<String> findAllTenDangNhap();
 
     // Optional<NguoiDung> findByTenDangNhap(String tenDangNhap);
-
     Optional<NguoiDung> findByTenDangNhapAndMatKhau(String tenDangNhap, String matKhau);
 
     // tu id lay anhchandung 
@@ -39,4 +38,12 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, UUID> {
     Optional<NguoiDung> findFirstByNguoiDungId(UUID ndId);
 
     boolean existsByTenDangNhap(String tenDangNhap);
+
+    // tu id vaitronguoidung lat nguoidung
+    @Query("SELECT n FROM NguoiDung n JOIN VaiTroNguoiDung vtnd ON n.id = vtnd.nguoiDung.id WHERE vtnd.id = :vtndId")
+    Optional<NguoiDung> findNguoiDungByVaiTroNguoiDungId(UUID vtndId);
+
+    // tu ThongTinNguoiBan lay nguoidung
+    @Query("SELECT n FROM NguoiDung n JOIN ThongTinNguoiBan ttnb ON n.id = ttnb.nguoiDung.id WHERE ttnb.id = :ttnbId")
+    Optional<NguoiDung> findNguoiDungByThongTinNguoiBanId(UUID ttnbId);
 } 

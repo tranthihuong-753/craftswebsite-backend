@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.repository.ThongTinNguoiBanRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.CheckoutRequest;
 import com.example.demo.dto.CheckoutResponse;
@@ -32,8 +30,6 @@ import com.example.demo.entity.SanPhamCoSan;
 import com.example.demo.entity.TaiKhoanNganHang;
 import com.example.demo.entity.ThanhToan;
 import com.example.demo.entity.ThongTinNguoiBan;
-import com.example.demo.entity.VaiTro;
-import com.example.demo.entity.VaiTroNguoiDung;
 import com.example.demo.enums.TrangThaiTaiKhoanNganHang;
 import com.example.demo.repository.AnhVideoRepository;
 import com.example.demo.repository.AnhVideoSanPhamRepository;
@@ -45,6 +41,7 @@ import com.example.demo.repository.SanPhamCoSanRepository;
 import com.example.demo.repository.SanPhamRepository;
 import com.example.demo.repository.TaiKhoanNganHangRepository;
 import com.example.demo.repository.ThanhToanRepository;
+import com.example.demo.repository.ThongTinNguoiBanRepository;
 import com.example.demo.repository.VaiTroNguoiDungRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -175,8 +172,8 @@ public class OrderService {
             donHang.setNguoiMuaId(userId);
             donHang.setNguoiBanId(sellerId);
 
-            donHang.setTrangThai("TAO");
-            donHang.setTrangThaiThanhToan("CHUA_THANH_TOAN");
+            donHang.setTrangThai("CHO_XAC_NHAN");
+            donHang.setTrangThaiThanhToan("CHUA_THANH_TOAN"); 
             donHang.setNgayDat(LocalDateTime.now());
 
             // ===== 6. SNAPSHOT ADDRESS =====
@@ -289,186 +286,7 @@ public class OrderService {
     }
 
 
-
     @Transactional
-
-    // public List<ShopDTO> initOrders(UUID buyerId, List<Long> cartItemIds) {
-
-    //     // 1. Tìm các item trong giỏ hàng
-
-    //     List<GioHang> cartItems = gioHangRepo.findAllById(cartItemIds);
-
-        
-
-    //     // 2. Nhóm theo Người bán (TTNB_Id)
-
-    //     Map<UUID, List<GioHang>> groups = cartItems.stream()
-
-    //         .collect(Collectors.groupingBy(gh -> gh.getSanPham().getThongTinNguoiBan().getId()));
-
-
-
-    //     List<ShopDTO> response = new ArrayList<>();
-
-
-
-    //     for (Map.Entry<UUID, List<GioHang>> entry : groups.entrySet()) {
-
-    //         UUID sellerId = entry.getKey();
-
-    //         List<GioHang> items = entry.getValue();
-
-    //         ThongTinNguoiBan sellerInfo = items.get(0).getSanPham().getThongTinNguoiBan();
-
-
-
-    //         // 3. Tạo DonHang (Trạng thái TAO)
-
-    //         DonHang dh = new DonHang();
-
-    //         dh.setMaDon("ORD-" + System.currentTimeMillis());
-
-    //         dh.setNguoiMuaId(buyerId);
-
-    //         dh.setNguoiBanId(sellerId);
-
-    //         dh.setTrangThai("TAO");
-
-    //         dh.setTrangThaiThanhToan("CHUA_THANH_TOAN");
-
-    //         dh.setNgayTao(LocalDateTime.now());
-
-            
-
-    //         // Snapshot địa chỉ mặc định (Nếu có)
-
-    //         diaChiRepo.findFirstByVaiTroNguoiDung_NguoiDung_IdAndThietLapMacDinh(sellerId, 1)
-
-    //             .ifPresent(addr -> dh.setDiaChiNguoiBanId(addr.getDiaChiDayDu()));
-
-    //         diaChiRepo.findFirstByVaiTroNguoiDung_NguoiDung_IdAndThietLapMacDinh(buyerId, 1)
-
-    //             .ifPresent(addr -> dh.setDiaChiNguoiMuaId(addr.getDiaChiDayDu()));
-
-
-
-    //         // Fix các phí theo yêu cầu
-
-    //         dh.setPhiSan(BigDecimal.ONE);
-
-    //         dh.setTienThue(BigDecimal.ONE);
-
-    //         dh.setChietKhau(BigDecimal.ONE);
-
-    //         dh.setTienShip(BigDecimal.ZERO); // Sẽ tính ở bước 2
-
-
-
-    //         donHangRepo.save(dh);
-
-
-
-    //         // 4. Tạo ChiTietDonHang & Stock Reservation
-
-    //         BigDecimal tongTienHang = BigDecimal.ZERO;
-
-    //         List<ProductDTO> productDTOs = new ArrayList<>();
-
-
-
-    //         for (GioHang gh : items) {
-
-    //             SanPhamCoSan spcs = sanphamcoSanRepo.findById(gh.getSanPham().getId())
-    //                 .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
-
-                
-
-    //             // Logic Giữ hàng
-
-    //             spcs.setSoLuongTamGiu(spcs.getSoLuongTamGiu() + gh.getSoLuong());
-
-    //             spcsRepo.save(spcs);
-
-
-
-    //             ChiTietDonHang ct = new ChiTietDonHang();
-
-    //             ct.setDonHang(dh);
-
-    //             ct.setSanPhamId(gh.getSanPham().getId());
-
-    //             ct.setTenSanPham(gh.getSanPham().getTen());
-
-    //             ct.setSoLuong(gh.getSoLuong());
-
-    //             ct.setDonGia(gh.getDonGiaSnapshot());
-
-    //             ct.setThanhTien(gh.getDonGiaSnapshot().multiply(new BigDecimal(gh.getSoLuong())));
-
-    //             ct.setTienThue(BigDecimal.ONE);
-
-    //             ct.setNgayTao(LocalDateTime.now());
-
-    //             chiTietRepo.save(ct);
-
-
-
-    //             tongTienHang = tongTienHang.add(ct.getThanhTien());
-
-                
-
-    //             // Map to DTO
-
-    //             ProductDTO pDto = new ProductDTO();
-
-    //             pDto.setCartItemId(gh.getId());
-
-    //             pDto.setName(ct.getTenSanPham());
-
-    //             pDto.setPrice(ct.getDonGia());
-
-    //             pDto.setQuantity(ct.getSoLuong());
-
-    //             productDTOs.add(pDto);
-
-    //         }
-
-
-
-    //         dh.setTongTienHang(tongTienHang);
-
-    //         dh.setTienPhaiThanhToan(tongTienHang.add(dh.getPhiSan()).add(dh.getTienThue()));
-
-    //         donHangRepo.save(dh);
-
-
-
-    //         // 5. ShopDTO Response
-
-    //         ShopDTO sDto = new ShopDTO();
-
-    //         sDto.setShopId(sellerId);
-
-    //         sDto.setShopName(sellerInfo.getNguoiDung().getTen());
-
-    //         sDto.setProducts(productDTOs);
-
-    //         response.add(sDto);
-
-    //     }
-
-
-
-    //     // 6. Xóa khỏi giỏ hàng
-
-    //     gioHangRepo.deleteAll(cartItems);
-
-    //     return response;
-
-    // }
-
-    // TRONG OrderService.java
-
     public List<ShopDTO> initOrders(UUID buyerId, List<Long> cartItemIds) {
         List<GioHang> cartItems = gioHangRepo.findAllById(cartItemIds);
         if (cartItems.isEmpty()) throw new RuntimeException("Giỏ hàng trống");
@@ -489,7 +307,7 @@ public class OrderService {
             dh.setMaDon("ORD-" + System.currentTimeMillis());
             dh.setNguoiMuaId(buyerId);
             dh.setNguoiBanId(sellerId);
-            dh.setTrangThai("TAO");
+            dh.setTrangThai("CHO_XAC_NHAN");
             dh.setTrangThaiThanhToan("CHUA_THANH_TOAN");
             dh.setNgayTao(LocalDateTime.now());
             
@@ -540,7 +358,7 @@ public class OrderService {
                 List<AnhVideoSanPham> images = anhVideoSanPhamRepo.findBySanPhamIdAndType(gh.getSanPham().getId(), "IMAGE");
                 List<String> imageUrls = new ArrayList<>();
                 if (images != null && !images.isEmpty()) {
-                    imageUrls.add(images.get(0).getLink());
+                    imageUrls.add(images.get(0).getLink()); 
                 }
                 if (!imageUrls.isEmpty()) {
                     pDto.setCoverUrls(imageUrls.get(0));
@@ -658,8 +476,6 @@ public class OrderService {
 
     }
 
-
-
     @Transactional
     public void uploadPaymentProof(List<PaymentProofRequest> requests) {
 
@@ -678,15 +494,14 @@ public class OrderService {
             ThanhToan tt = new ThanhToan();
             tt.setDonHang(dh);
             tt.setSoTien(dh.getTienPhaiThanhToan());
-            tt.setTrangThai("CHO_XAC_NHAN");
+            tt.setTrangThai("DANG_XU_LY");
             tt.setAnhMinhChungId(proofImg.getId());
             tt.setNgayTao(LocalDateTime.now());
 
             thanhToanRepo.save(tt);
 
             // 3. Update đơn hàng
-            dh.setTrangThai("XAC_NHAN");
-            dh.setTrangThaiThanhToan("DA_THANH_TOAN");
+            dh.setTrangThaiThanhToan("DANG_XU_LY");
             dh.setNgayDat(LocalDateTime.now());
 
             donHangRepo.save(dh);

@@ -185,7 +185,7 @@ public class ThongTinNguoiBanService {
         ttnb.setTienNhanCong(new BigDecimal(req.getTienNhanCong()));
         ttnb.setTienThuongHieu(new BigDecimal(req.getTienThuongHieu()));
         ttnb.setMaSoThue(req.getMaSoThue());
-        ttnb.setTrangThai(TTNB_TrangThai.PENDING);
+        ttnb.setTrangThai(TTNB_TrangThai.PENDING); 
 
         repository.save(ttnb);
 

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/nhat-ky-kiem-toan")
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 public class NhatKyKiemToanController {
 
     private final NhatKyKiemToanService service;
