@@ -43,6 +43,7 @@ import com.example.demo.repository.TaiKhoanNganHangRepository;
 import com.example.demo.repository.ThanhToanRepository;
 import com.example.demo.repository.ThongTinNguoiBanRepository;
 import com.example.demo.repository.VaiTroNguoiDungRepository;
+import com.example.demo.security.JwtService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -143,7 +144,7 @@ public class OrderService {
 
         // ===== 1. Lấy user từ token =====
         String token = request.getHeader("Authorization").replace("Bearer ", "");
-        UUID userId = UUID.fromString(jwtService.extractUserId(token));
+        UUID userId =jwtService.extractUserId(token);
 
         // ===== 2. Lấy cart items =====
         List<GioHang> cartItems = gioHangRepo.findAllById(cartItemIds);

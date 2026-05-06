@@ -12,7 +12,7 @@ import com.example.demo.model.ND_CCCD;
 public class CCCDService {
 
     public ND_CCCD scanCCCD(String imageUrl) {
-
+ 
         String url = "http://localhost:8000/cccd/scan";
 
         Map<String, String> body = new HashMap<>();

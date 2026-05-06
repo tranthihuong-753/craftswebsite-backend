@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.security;
 
 import io.jsonwebtoken.security.Keys;
 import java.util.Base64;

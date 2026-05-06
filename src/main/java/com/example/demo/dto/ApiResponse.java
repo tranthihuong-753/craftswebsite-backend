@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApiResponse<T> {
     private String message;
-    private T data;
+    private T data; 
     private LocalDateTime timestamp = LocalDateTime.now();
 }

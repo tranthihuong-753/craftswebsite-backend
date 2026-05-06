@@ -13,5 +13,5 @@ public class VaiTro {
     private Long id;
 
     @Column(name = "VT_Loai", unique = true, nullable = false)
-    private String loai;
+    private String loai;  //  "BUYER","SELLER","SHIPPER","COMPLIANCE_ADMIN",SUPPORT_ADMIN",SUPER_ADMIN"
 }
