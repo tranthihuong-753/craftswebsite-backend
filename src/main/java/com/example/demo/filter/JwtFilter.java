@@ -1,6 +1,5 @@
 package com.example.demo.filter;
 
-import com.example.demo.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.demo.security.JwtService;
+
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter { 
 
     @Autowired
     private JwtService jwtService;
@@ -29,10 +31,9 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             try {
-                String userId = jwtService.extractUserId(token);
+                UUID userId = jwtService.extractUserId(token);
 
-                // 🔥 gắn userId vào request
-                request.setAttribute("userId", userId);
+                request.setAttribute("userId", userId.toString());
 
             } catch (Exception e) {
                 response.setStatus(401);
@@ -42,4 +43,5 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

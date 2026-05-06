@@ -6,7 +6,7 @@ import com.example.demo.entity.ThongTinNguoiBan;
 import com.example.demo.repository.NguoiDungRepository;
 import com.example.demo.repository.TaiKhoanNganHangRepository;
 import com.example.demo.repository.ThongTinNguoiBanRepository;
-import com.example.demo.service.JwtService;
+import com.example.demo.security.JwtService;
 import com.example.demo.service.ThongTinNguoiBanService;
 
 import jakarta.servlet.http.HttpServletRequest;

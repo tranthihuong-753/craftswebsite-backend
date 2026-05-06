@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.annotation.ApiDescription;
 import com.example.demo.entity.AnhVideo;
 import com.example.demo.entity.NguoiDung;
 import com.example.demo.service.NguoiDungService;
@@ -23,42 +24,48 @@ import com.example.demo.service.NguoiDungService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/nguoi-dung")
+@RequestMapping("/nguoidung")
 public class NguoiDungController {
     @Autowired
     private NguoiDungService nguoiDungService;
     
     @PostMapping
+    @ApiDescription("Khởi tạo hồ sơ người dùng mới trong hệ thống")
     public NguoiDung createNguoiDung(@RequestBody NguoiDung nguoiDung) {
         return nguoiDungService.createNguoiDung(nguoiDung);
     }
 
     // READ ALL
     @GetMapping
+    @ApiDescription("Truy vấn danh sách toàn bộ người dùng và trạng thái định danh")
     public List<NguoiDung> getAllNguoiDung() {
         return nguoiDungService.getAllNguoiDung();
     }
 
     // READ BY ID
     @GetMapping("/{id}")
+    @ApiDescription("Xem thông tin chi tiết hồ sơ người dùng theo mã định danh UUID")
     public NguoiDung getNguoiDungById(@PathVariable UUID id) {
         return nguoiDungService.getNguoiDungById(id);
     }
 
     // UPDATE
     @PutMapping("/{id}")
+    @ApiDescription("Cập nhật thông tin cá nhân và cấu hình tài khoản người dùng")
     public NguoiDung updateNguoiDung(@PathVariable UUID id, @RequestBody NguoiDung nguoiDung) {
         return nguoiDungService.updateNguoiDung(id, nguoiDung);
     }
-
+ 
     // DELETE
     @DeleteMapping("/{id}")
+    @ApiDescription("Vô hiệu hóa hoặc gỡ bỏ tài khoản người dùng khỏi hệ thống")
     public void deleteNguoiDung(@PathVariable UUID id) {
         nguoiDungService.deleteNguoiDung(id);
     }
 
     // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     @PostMapping("/create/sdt")
+    @ApiDescription("Đăng ký tài khoản cấp độ 1 (Xác thực qua số điện thoại)")
     public ResponseEntity<?> taoBangSDT(@RequestBody Map<String,String> body) {
         String sdt = body.get("sdt");
 
@@ -82,7 +89,8 @@ public class NguoiDungController {
     }
 
     // UPDATE TAI KHOAN LEVEL 2 - SU DUNG CCCD 
-    @PostMapping("/scan-cccd")
+    @PostMapping("/scan/cccd")
+    @ApiDescription("Nâng cấp xác thực cấp độ 2 (Định danh điện tử qua quét CCCD)")
     public ResponseEntity<?> scanCCCD(
         @RequestBody Map<String,String> body
         , HttpServletRequest request
@@ -112,7 +120,8 @@ public class NguoiDungController {
     }
 
     // UPDATE TAI KHOAN LEVEL 3 - TAO USERNAME PASSWORD 
-    @PostMapping("/set-password")
+    @PostMapping("/setpassword")
+    @ApiDescription("Hoàn tất xác thực cấp độ 3 (Thiết lập thông tin đăng nhập mật khẩu)")
     public ResponseEntity<?> setPassword(
         @RequestBody Map<String,String> body
         , HttpServletRequest request
@@ -147,12 +156,14 @@ public class NguoiDungController {
         );
     }
 
-    @GetMapping("/ten-dang-nhap")
+    @GetMapping("/tendangnhap")
+    @ApiDescription("Truy vấn danh sách kiểm tra tên đăng nhập đã tồn tại")
     public List<String> getAllTenDangNhap() {
         return nguoiDungService.getAllTenDangNhap();
     }
 
     @PostMapping("/login")
+    @ApiDescription("Xác thực đăng nhập hệ thống và cấp mã phiên làm việc (Token)")
     public ResponseEntity<?> login(@RequestBody Map<String,String> body) {
 
         String username = body.get("username");
@@ -180,6 +191,7 @@ public class NguoiDungController {
         
     // TU ID LAY ANH CHAN DUNG 
     @GetMapping("/me/anh-chan-dung")
+    @ApiDescription("Truy vấn liên kết ảnh chân dung của người dùng đang đăng nhập")
     public ResponseEntity<?> getMyAnhChanDung(
         HttpServletRequest request
     ) {
@@ -221,6 +233,7 @@ public class NguoiDungController {
 
     // tu id lay ten nguoi dung
     @GetMapping("/me/ten")
+    @ApiDescription("Truy vấn họ tên hiển thị của người dùng đang đăng nhập")
     public Map<String,Object> getMyTen(HttpServletRequest request) {
 
         String userId = (String) request.getAttribute("userId");

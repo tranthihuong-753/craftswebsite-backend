@@ -1,3 +1,6 @@
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\annotation\ApiDescription.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\ApiDataSeeder.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\CacheConfig.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\CorsConfig.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\config\DataInitializer.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\AnhVideoController.java
@@ -24,7 +27,6 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTro
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\controller\VaiTroNguoiDungController.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\DemoApplication.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ApiResponse.java
-C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\AppException.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\CancelOrderRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\CartResponse.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\CheckoutRequest.java
@@ -39,6 +41,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\OrderProductD
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PaymentInfoResponse.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PaymentProofRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PaymentShopDTO.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PermissionMatrixDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ProductDTO.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamCoSanRequest.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationDTO.java
@@ -95,6 +98,7 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiSa
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiTaiKhoanNganHang.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TrangThaiVaiTro.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\enums\TTNB_TrangThai.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\exception\AppException.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\filter\JwtFilter.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\model\ND_CCCD.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\AnhVideoRepository.java
@@ -122,6 +126,9 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VaiTro
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VaiTroNguoiDungRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VaiTroRepository.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\repository\VanChuyenRepository.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\security\CustomAuthorizationFilter.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\security\GenSecret.java
+C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\security\JwtService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\AnhVideoService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\ApiService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\AuditService.java
@@ -131,14 +138,11 @@ C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DanhMucSe
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DiaChiService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DonHangService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\DonHangServiceImpl.java
-C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\GenSecret.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\GioHangService.java
-C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\JwtService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\LoaiSanPhamService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\NguoiDungService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\NhatKyKiemToanService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\OrderService.java
-C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\OtpService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\PaymentService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\SanPhamCoSanService.java
 C:\hu\web\craftswebsite-backend\src\main\java\com\example\demo\service\SanPhamService.java

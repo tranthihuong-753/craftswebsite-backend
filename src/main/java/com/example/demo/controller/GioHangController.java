@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.annotation.ApiDescription;
 import com.example.demo.entity.GioHang;
 import com.example.demo.repository.GioHangRepository;
 import com.example.demo.service.GioHangService;
@@ -25,6 +26,7 @@ public class GioHangController {
 
     // THEM SP VAO GIO HANG 
     @PostMapping("/cart/add/{spcsId}")
+    @ApiDescription("Thêm sản phẩm vào giỏ hàng và thực hiện chốt dữ liệu đơn giá snapshot")
     public ResponseEntity<?> addToCart(
             @PathVariable Long spcsId,
             HttpServletRequest request
@@ -44,6 +46,7 @@ public class GioHangController {
 
     // LAY SAN PHAM THEO USER ID DE HIEN THI TRONG GIO HANG 
     @GetMapping
+    @ApiDescription("Truy vấn danh sách sản phẩm trong giỏ hàng theo định danh người dùng")
     public ResponseEntity<?> getCart(HttpServletRequest request) {
 
         String userIdStr = (String) request.getAttribute("userId");
@@ -59,6 +62,7 @@ public class GioHangController {
 
     // TICK/ BO TICK SAN PHAM PHUC VU CHO DAT HANG 
     @PatchMapping("/{id}/check")
+    @ApiDescription("Thay đổi trạng thái lựa chọn sản phẩm phục vụ quy trình tạo đơn hàng")
     public ResponseEntity<?> toggleCheck(
             @PathVariable Long id,
             HttpServletRequest request
@@ -81,6 +85,7 @@ public class GioHangController {
 
     // CHINH SUA SO LUONG SAN PHAM TRONG GIO HANG 
     @PatchMapping("/{id}/quantity")
+    @ApiDescription("Cập nhật số lượng sản phẩm mong muốn trong giỏ hàng")
     public ResponseEntity<?> updateQuantity(
             @PathVariable Long id,
             @RequestParam Integer quantity,
@@ -104,6 +109,7 @@ public class GioHangController {
 
     // XOA SAN PHAM KHOI GIO HANG 
     @DeleteMapping("/{id}")
+    @ApiDescription("Gỡ bỏ sản phẩm khỏi giỏ hàng cá nhân")
     public ResponseEntity<?> delete(
             @PathVariable Long id,
             HttpServletRequest request

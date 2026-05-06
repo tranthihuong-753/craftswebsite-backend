@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +12,7 @@ public interface VaiTroRepository extends JpaRepository<VaiTro, Long> {
 
     // boolean existsByTenVaiTro(String role);
 
-    VaiTro findByLoai(String string);
+    VaiTro findByLoai(String loai);
 
     boolean existsByLoai(String role);
 

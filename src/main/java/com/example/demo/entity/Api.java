@@ -22,7 +22,7 @@ public class Api {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "API_PhuongThuc")
-    private PhuongThucHttp phuongThuc;
+    private PhuongThucHttp phuongThuc; // GET,POST,PUT,DELETE,PATCH
 
     @Column(name = "API_DuongDan")
     private String duongDan;

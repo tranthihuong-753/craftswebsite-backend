@@ -1,8 +1,8 @@
-package com.example.demo.dto;
+package com.example.demo.exception;
 
 import lombok.Getter;
 
-@Getter
+@Getter 
 public class AppException extends RuntimeException {
     private final String errorCode;
     private final int httpStatus;

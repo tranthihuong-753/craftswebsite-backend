@@ -14,6 +14,10 @@ import com.example.demo.entity.NguoiDung;
 @Repository
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, UUID> {
 
+    // KIEM TRA SDT DA TON TAI CHUA 
+    boolean existsBySdt(String sdt);
+
+    // TIM NGUOI DUNG BANG SDT 
     Optional<NguoiDung> findBySdt(String sdt);
 
     @Query("SELECT n.tenDangNhap FROM NguoiDung n WHERE n.tenDangNhap IS NOT NULL")

@@ -19,6 +19,8 @@ import com.example.demo.model.ND_CCCD;
 import com.example.demo.repository.NguoiDungRepository;
 import com.example.demo.repository.VaiTroNguoiDungRepository;
 import com.example.demo.repository.VaiTroRepository;
+import com.example.demo.security.JwtService;
+
 @Service
 public class NguoiDungService {
     @Autowired
@@ -81,32 +83,6 @@ public class NguoiDungService {
         nguoiDungRepository.deleteById(id);
     }
 
-    // public NguoiDung taoNguoiDungTuCCCD(String imageUrl) {
-        
-    //     // 1 đọc CCCD từ python
-    //     ND_CCCD cccd = cccdService.scanCCCD(imageUrl);
-
-    //     // 2 tạo người dùng
-    //     NguoiDung nd = new NguoiDung();
-
-    //     nd.setCccd(cccd);
-    //     nd.setTen(cccd.getHoTen());
-    //     nd.setTrangThaiXacThuc(ND_Trangthaixacthuc.CCCD);
-
-    //     nguoiDungRepository.save(nd);
-
-    //     // 3 gán role BUYER
-    //     VaiTro roleBuyer = vaiTroRepository.findById(1L).orElseThrow();
-
-    //     VaiTroNguoiDung vtnd = new VaiTroNguoiDung();
-    //     vtnd.setNguoiDung(nd);
-    //     vtnd.setVaiTro(roleBuyer);
-
-    //     vtndRepository.save(vtnd);
-
-    //     return nd;
-    // }
-
     // UPDATE TAI KHOAN LEVEL 2 - SU DUNG CCCD 
     public NguoiDung taoNguoiDungTuCCCD(UUID userId, String imageUrl) {
 
@@ -136,9 +112,36 @@ public class NguoiDungService {
 
         return nguoiDungRepository.save(nd);
     }
-
+ 
     // TAO TAI KHOAN LEVEL 1 - SU DUNG SDT 
     public Map<String, Object> dangKyBangSDT(String sdt) {
+
+        // kiểm tra định dạng sdt
+        if (sdt == null || !sdt.matches("0\\d{9}")) {
+            return null;
+        }
+        // kiểm tra sdt đã tồn tại chưa
+        if (nguoiDungRepository.existsBySdt(sdt)) {
+            NguoiDung nd_ = nguoiDungRepository.findBySdt(sdt).orElse(null);
+
+            Map<String, Object> result = new HashMap<>();
+            
+            UUID userId = nd_.getId();
+
+            List<VaiTroNguoiDung> list =
+                    vtndRepository.findByNguoiDung_Id(userId);
+
+            List<String> roles = list.stream()
+                    .map(v -> v.getVaiTro().getLoai())
+                    .toList();
+
+            String token = jwtService.generateToken(nd_, roles);
+
+            result.put("token", token);
+            result.put("user", nd_);
+
+            return result;
+        }
         
         Map<String, Object> result = new HashMap<>();
 
