@@ -20,7 +20,7 @@ public class OrderItemDTO {
 
     private BigDecimal totalAmount;
 
-    private String orderStatus;
+    private String orderStatus; 
     private String paymentStatus;
 
     private List<OrderProductDTO> items;

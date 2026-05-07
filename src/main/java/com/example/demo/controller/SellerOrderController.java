@@ -28,7 +28,7 @@ public class SellerOrderController {
 
     private final SellerOrderService service;
 
-    @GetMapping 
+    @GetMapping  
     public ApiResponse<Page<OrderItemDTO>> getOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -70,6 +70,7 @@ public class SellerOrderController {
                         null,
                         LocalDateTime.now()
                 );
+                
             }
 
             UUID userId = UUID.fromString(userIdStr);

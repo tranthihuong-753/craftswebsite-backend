@@ -50,4 +50,5 @@ public interface DonHangRepository extends JpaRepository<DonHang, Long> {
     @Query("SELECT o FROM DonHang o WHERE o.id = :id")
     Optional<DonHang> findByIdForUpdate(@Param("id") Long id);
     
+    Optional<DonHang> findById(Long id);
 }

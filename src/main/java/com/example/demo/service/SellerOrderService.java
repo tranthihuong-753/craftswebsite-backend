@@ -87,6 +87,7 @@ public class SellerOrderService {
         // XAC_NHAN_THANH_TOAN: DH_TrangThai = 'CHO_XAC_NHAN' AND DH_TrangThaiThanhToan = 'DANG_XU_LY'. (Nghĩa là: Khách đã gửi bill, Seller cần check tiền).
         // XAC_NHAN_LAY_HANG: DH_TrangThai = 'CHO_XAC_NHAN' AND DH_TrangThaiThanhToan = 'DA_THANH_TOAN'. (Nghĩa là: Đã nhận tiền, Seller cần chuẩn bị hàng).
         // XAC_NHAN_GIAO_HANG: DH_TrangThai = 'CHO_LAY_HANG' AND DH_TrangThaiThanhToan = 'DA_THANH_TOAN'. (Nghĩa là: Hàng đã đóng gói xong, chờ giao cho Shipper).
+        // DANG_GIAO: DH_TrangThai = 'CHO_GIAO_HANG' AND DH_TrangThaiThanhToan = 'DA_THANH_TOAN'. (Nghĩa là: Hàng đã đóng gói xong, chờ giao cho Shipper).
         // HOAN_THANH: DH_TrangThai = 'DA_GIAO'.
         // DA_HUY: DH_TrangThai = 'DA_HUY'.
         String dh_trangthai = null;
@@ -99,6 +100,9 @@ public class SellerOrderService {
             dh_trangthaiThanhtoan = "DA_THANH_TOAN";
         } else if ("XAC_NHAN_GIAO_HANG".equals(processingType)) {
             dh_trangthai = "CHO_LAY_HANG";
+            dh_trangthaiThanhtoan = "DA_THANH_TOAN";
+        } else if ("DANG_GIAO".equals(processingType)) {
+            dh_trangthai = "CHO_GIAO_HANG";
             dh_trangthaiThanhtoan = "DA_THANH_TOAN";
         } else if ("HOAN_THANH".equals(processingType)) {
             dh_trangthai = "DA_GIAO";
@@ -128,8 +132,8 @@ public class SellerOrderService {
                     //     .stream()
                     //     .map(AnhVideoSanPham::getLink)
                     //     .toList();
-                    String firstImage = anhVideoSanPhamRepo.findFirstBySanPhamIdAndTypeOrderByThuTuAsc(sanPhamId, "IMAGE")
-                        .map(AnhVideoSanPham::getLink).orElse("default-image-url.jpg");
+                    String firstImage = anhVideoSanPhamRepo.findFirstBySanPhamIdAndType(sanPhamId, "IMAGE")
+                        .map(AnhVideoSanPham::getLink).orElse("https://media-cdn-v2.laodong.vn/storage/newsportal/2025/8/3/1551389/Maqr.jpg");
                     return OrderProductDTO.builder()
                             .productName(ct.getTenSanPham())
                             .productImage(firstImage)
@@ -156,7 +160,7 @@ public class SellerOrderService {
                     .map(ThanhToan::getAnhMinhChungId)
                     .flatMap(anhId -> anhVideoSanPhamRepo.findById(anhId))
                     .map(AnhVideoSanPham::getLink)
-                    .orElse(null)
+                    .orElse("https://media-cdn-v2.laodong.vn/storage/newsportal/2025/8/3/1551389/Maqr.jpg")
                 )
                 .build();
     }
@@ -222,7 +226,7 @@ public class SellerOrderService {
             sp.setSoLuongTamGiu(sp.getSoLuongTamGiu() - item.getSoLuong());
         }        
             
-        // order.setTrangThai("CHO_LAY_HANG");
+        order.setTrangThai("CHO_LAY_HANG");
         order.setNgayCapNhat(LocalDateTime.now());
         // order.setTrangThaiThanhToan("DA_THANH_TOAN");
         donHangRepo.save(order);

@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tblDonHang")
 @Data
-public class DonHang {
+public class DonHang { 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

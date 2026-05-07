@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.UUID; 
 
 @RestController
 @RequestMapping("/payment")
@@ -39,10 +39,19 @@ public class PaymentController {
  
     @PostMapping("/{id}/confirm-payment")
     public ResponseEntity<ApiResponse<Void>> confirmPayment(@PathVariable Long id, HttpServletRequest request) {
-        UUID sellerId = UUID.fromString((String) request.getAttribute("userId"));
+        String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body(new ApiResponse<>(
+                    "UNAUTHORIZED",
+                    null,
+                    null
+            ));
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
         String clientIp = request.getRemoteAddr();
         
-        paymentService.confirmPaymentReceived(id, sellerId, clientIp);
+        paymentService.confirmPaymentReceived(id, userId, clientIp);
         
         return ResponseEntity.ok(new ApiResponse<>(
                 "SUCCESS",

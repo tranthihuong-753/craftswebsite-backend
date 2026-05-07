@@ -69,6 +69,9 @@ public class GioHangController {
     ) {
 
         String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
         UUID userId = UUID.fromString(userIdStr);
 
         GioHang gh = gioHangRepository.findById(id).orElseThrow();
@@ -93,6 +96,9 @@ public class GioHangController {
     ) {
 
         String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
         UUID userId = UUID.fromString(userIdStr);
 
         GioHang gh = gioHangRepository.findById(id).orElseThrow();
@@ -116,6 +122,9 @@ public class GioHangController {
     ) {
 
         String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
         UUID userId = UUID.fromString(userIdStr);
         System.out.println("userId: " + userId);
 

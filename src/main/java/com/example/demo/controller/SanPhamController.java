@@ -53,6 +53,13 @@ public class SanPhamController {
     public long demSanPhamDangBan(HttpServletRequest request) {
 
         String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            throw new com.example.demo.exception.AppException(
+                    "UNAUTHORIZED",
+                    "Unauthorized",
+                    401
+            );
+        }
         UUID userId = UUID.fromString(userIdStr);
 
         return service.demSanPhamDangBanByUserId(userId);

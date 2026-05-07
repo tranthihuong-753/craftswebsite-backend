@@ -141,9 +141,9 @@ public class PaymentService {
     @Autowired private ThanhToanRepository thanhToanRepo;
     @Autowired private SanPhamCoSanRepository spcsRepo;
     @Autowired private AuditService auditService; // Vùng 4: Log
-
+ 
     @Transactional 
-    public void confirmPaymentReceived(Long orderId, UUID sellerId, String clientIp) {
+    public void confirmPaymentReceived(Long orderId, UUID sellerUserId, String clientIp) {
         // 1. Tìm đơn hàng
         // DonHang order = donHangRepo.findById(orderId)
         //         .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
@@ -153,6 +153,23 @@ public class PaymentService {
                     "Không tìm thấy đơn hàng",
                     404
             ));
+
+        // SECURITY: chỉ seller của order mới được confirm
+        UUID sellerShopId = thongtinNguoiBanRepository.findByNguoiDungId(sellerUserId)
+                .orElseThrow(() -> new AppException(
+                        "FORBIDDEN",
+                        "Bạn không phải người bán",
+                        403
+                ))
+                .getId();
+
+        if (order.getNguoiBanId() == null || !order.getNguoiBanId().equals(sellerShopId)) {
+            throw new AppException(
+                    "FORBIDDEN",
+                    "Bạn không có quyền xác nhận thanh toán đơn này",
+                    403
+            );
+        }
 
         // 2. Tìm bản ghi thanh toán tương ứng
         // ThanhToan payment = thanhToanRepo.findByDonHangId(orderId)
@@ -199,7 +216,7 @@ public class PaymentService {
         });
 
         // 7. Ghi Log hệ thống (Vùng 4)
-        auditService.record(NKKT_HanhDong.CONFIRM_PAYMENT, NKKT_LoaiTacNhan.SELLER, sellerId, NKKT_LoaiMucTieu.DON_HANG, orderId, "Tiền đã về tài khoản", clientIp);
+        auditService.record(NKKT_HanhDong.CONFIRM_PAYMENT, NKKT_LoaiTacNhan.SELLER, sellerShopId, NKKT_LoaiMucTieu.DON_HANG, orderId, "Tiền đã về tài khoản", clientIp);
     }
  
 }

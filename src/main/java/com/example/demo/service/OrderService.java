@@ -31,6 +31,7 @@ import com.example.demo.entity.TaiKhoanNganHang;
 import com.example.demo.entity.ThanhToan;
 import com.example.demo.entity.ThongTinNguoiBan;
 import com.example.demo.enums.TrangThaiTaiKhoanNganHang;
+import com.example.demo.exception.AppException;
 import com.example.demo.repository.AnhVideoRepository;
 import com.example.demo.repository.AnhVideoSanPhamRepository;
 import com.example.demo.repository.ChiTietDonHangRepository;
@@ -292,6 +293,21 @@ public class OrderService {
         List<GioHang> cartItems = gioHangRepo.findAllById(cartItemIds);
         if (cartItems.isEmpty()) throw new RuntimeException("Giỏ hàng trống");
 
+        // SECURITY: mỗi cart item phải thuộc buyer hiện tại
+        boolean hasForeignCartItem = cartItems.stream().anyMatch(gh ->
+                gh.getVaiTroNguoiDung() == null
+                        || gh.getVaiTroNguoiDung().getNguoiDung() == null
+                        || gh.getVaiTroNguoiDung().getNguoiDung().getId() == null
+                        || !gh.getVaiTroNguoiDung().getNguoiDung().getId().equals(buyerId)
+        );
+        if (hasForeignCartItem) {
+            throw new AppException(
+                    "FORBIDDEN",
+                    "Cart item không thuộc về user hiện tại",
+                    403
+            );
+        }
+
         // Nhóm theo Shop
         Map<UUID, List<GioHang>> groups = cartItems.stream()
             .collect(Collectors.groupingBy(gh -> gh.getSanPham().getThongTinNguoiBan().getId()));
@@ -478,11 +494,20 @@ public class OrderService {
     }
 
     @Transactional
-    public void uploadPaymentProof(List<PaymentProofRequest> requests) {
+    public void uploadPaymentProof(List<PaymentProofRequest> requests, UUID buyerId) {
 
         for (PaymentProofRequest req : requests) {
 
             DonHang dh = donHangRepo.findById(req.getOrderId()).orElseThrow();
+
+            // SECURITY: chỉ buyer của đơn mới được upload proof
+            if (dh.getNguoiMuaId() == null || !dh.getNguoiMuaId().equals(buyerId)) {
+                throw new AppException(
+                        "FORBIDDEN",
+                        "Order không thuộc về user hiện tại",
+                        403
+                );
+            }
 
             // 1. Lưu ảnh (KHÔNG cần save file nữa)
             AnhVideo proofImg = new AnhVideo();

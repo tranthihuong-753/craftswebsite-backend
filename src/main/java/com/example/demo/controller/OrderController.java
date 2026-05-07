@@ -39,7 +39,12 @@ public class OrderController {
 
     public ResponseEntity<List<ShopDTO>> initOrders(@RequestBody Map<String, List<Long>> payload, HttpServletRequest request) {
 
-        UUID userId = UUID.fromString((String) request.getAttribute("userId"));
+        String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
 
         return ResponseEntity.ok(orderService.initOrders(userId, payload.get("cartItemIds")));
 
@@ -48,9 +53,17 @@ public class OrderController {
     // 
     @PostMapping("/payment/upload-proof")
     public ResponseEntity<?> uploadProof(
-        @RequestBody List<PaymentProofRequest> requests
+        @RequestBody List<PaymentProofRequest> requests,
+        HttpServletRequest request
     ) {
-        orderService.uploadPaymentProof(requests);
+        String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        orderService.uploadPaymentProof(requests, userId);
         return ResponseEntity.ok().build();
     }
 
