@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.OrderResponse;
+import com.example.demo.dto.ReviewRequest;
 import com.example.demo.entity.DonHang;
 import com.example.demo.repository.DonHangRepository;
 
@@ -21,21 +22,34 @@ public class DonHangService {
     private DonHangRepository donHangRepository;
     
     @Transactional
-    public OrderResponse confirmReceived(Long orderId, String username) {
+    public void confirmAndReview(Long orderId, UUID userId, ReviewRequest review) {
         // 1. Tìm đơn hàng
-        DonHang order = donHangRepository.findById(orderId).orElse(null);
+        DonHang order = donHangRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
 
-        // 3. Kiểm tra trạng thái đơn hàng
-        if (!"DANG_GIAO".equals(order.getTrangThai())) {
-            throw new IllegalStateException("Đơn hàng phải ở trạng thái Đang giao mới có thể xác nhận");
+        // 2. Kiểm tra quyền (Chỉ người mua mới được chốt)
+        if (!order.getNguoiMuaId().equals(userId)) {
+            throw new RuntimeException("Bạn không có quyền thực hiện hành động này");
         }
 
-        // 4. Update trạng thái
-        order.setTrangThai("HOAN_THANH");
+        // 3. Cập nhật trạng thái
+        order.setTrangThai("DA_GIAO"); // Chuyển từ CHO_GIAO_HANG sang DA_GIAO
         order.setNgayHoanThanh(LocalDateTime.now());
-        donHangRepository.save(order);
 
-        return new OrderResponse(orderId, "HOAN_THANH", order.getNgayHoanThanh(), "Xác nhận thành công!");
+        // 4. Lưu đánh giá vào trường Ghi chú hoặc bảng Review
+        // Ở đây mình tận dụng trường DH_GhiChu để demo cho nhanh nếu Nàng chưa có bảng Review riêng
+        String reviewLog = String.format("[Rating: %d sao] - Nội dung: %s", 
+                                        review.getRating(), review.getComment());
+        order.setGhiChu(reviewLog);
+
+        donHangRepository.save(order);
     }
-    
+
+    public List<DonHang> findByNguoiMuaId(UUID userid) {
+        return donHangRepository.findByNguoiMuaId(userid);
+    }
+
+    public List<DonHang> findByNguoiMuaIdAndStatus(UUID userid, String status) {
+        return donHangRepository.findByNguoiMuaIdAndTrangThai(userid, status);
+    }
 }

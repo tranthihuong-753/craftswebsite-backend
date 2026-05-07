@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import com.example.demo.enums.TrangThaiSanPham;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -57,6 +59,7 @@ public class SanPham {
     private LocalDateTime ngayCapNhat;
 
     @OneToMany(mappedBy = "sanPham")
+    @JsonIgnore
     private List<AnhVideoSanPham> anhVideos;
 
     @PrePersist

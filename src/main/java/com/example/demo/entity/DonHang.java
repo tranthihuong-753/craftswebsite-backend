@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
  
 @Entity
 @Table(name = "tblDonHang")
@@ -97,6 +99,7 @@ public class DonHang {
 
     // Chi tiết đơn hàng
     @OneToMany(mappedBy = "donHang", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ChiTietDonHang> chiTietDonHangs;
 
     // METHOD

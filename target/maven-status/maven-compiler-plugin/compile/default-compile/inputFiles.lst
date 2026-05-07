@@ -37,6 +37,7 @@ C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\InitOrder
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\MediaDTO.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\OrderConfirmRequest.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\OrderItemDTO.java
+C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\OrderListDTO.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\OrderProductDTO.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\OrderResponse.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PaymentInfoResponse.java
@@ -44,6 +45,7 @@ C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PaymentPr
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PaymentShopDTO.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\PermissionMatrixDTO.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ProductDTO.java
+C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\ReviewRequest.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamCoSanRequest.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationDTO.java
 C:\hu\web\web\craftswebsite-backend\src\main\java\com\example\demo\dto\SanPhamModerationProjection.java

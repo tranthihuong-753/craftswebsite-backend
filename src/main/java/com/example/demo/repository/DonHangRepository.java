@@ -51,4 +51,8 @@ public interface DonHangRepository extends JpaRepository<DonHang, Long> {
     Optional<DonHang> findByIdForUpdate(@Param("id") Long id);
     
     Optional<DonHang> findById(Long id);
+    // Tìm theo ID của thực thể NguoiMua (giả sử trong DonHang có field nguoiMua)
+    List<DonHang> findByNguoiMuaId(UUID userId);
+
+    List<DonHang> findByNguoiMuaIdAndTrangThai(UUID userId, String status);
 }

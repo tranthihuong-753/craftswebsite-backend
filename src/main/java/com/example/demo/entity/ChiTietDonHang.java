@@ -15,7 +15,7 @@ public class ChiTietDonHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CTHD_Id")
     private Long id;
-
+ 
     @ManyToOne
     @JoinColumn(name = "CTHD_DH_Id")
     private DonHang donHang;
