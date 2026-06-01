@@ -1,0 +1,54 @@
+package com.example.demo.controller;
+
+import com.example.demo.dto.ApiResponse;
+import com.example.demo.dto.PaymentShopDTO;
+import com.example.demo.service.PaymentService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/payment")
+@RequiredArgsConstructor
+public class PaymentController {
+
+    @Autowired 
+    private PaymentService paymentService;
+
+    // @PostMapping("/info")
+    // public Object getPayment(@RequestBody List<Long> productIds) {
+    //     return service.buildPayment(productIds);
+    // }
+
+    @PostMapping("/info")
+    public ResponseEntity<List<PaymentShopDTO>> getPaymentInfo(
+            @RequestBody List<Long> orderIds
+    ) { 
+        return ResponseEntity.ok(
+                paymentService.getPaymentInfo(orderIds)
+        );
+    }
+
+ 
+    @PostMapping("/{id}/confirm-payment")
+    public ResponseEntity<ApiResponse<Void>> confirmPayment(@PathVariable Long id, HttpServletRequest request) {
+        UUID sellerId = UUID.fromString((String) request.getAttribute("userId"));
+        String clientIp = request.getRemoteAddr();
+        
+        paymentService.confirmPaymentReceived(id, sellerId, clientIp);
+        
+        return ResponseEntity.ok(new ApiResponse<>(
+                "SUCCESS",
+                null,
+                null
+        ));
+    }
+    
+}
